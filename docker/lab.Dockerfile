@@ -1,10 +1,12 @@
-FROM tf_dota_pred_lab:latest
+FROM python:3.10-slim
+
+RUN pip install poetry==1.7.1
 
 WORKDIR /app
 
 COPY poetry.lock .
 COPY pyproject.toml .
-COPY corfumv/ corfumv/
+COPY dist/ dist/
 
 RUN poetry config virtualenvs.create false && \
     poetry install --no-root
