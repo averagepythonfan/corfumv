@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from pymongo import MongoClient
-from CorfuMV import app
-from CorfuMV.mongo import get_service, PymongoUnitOfWork, PymongoCRUDService
+from corfumv import app
+from corfumv.mongo import get_service, PymongoUnitOfWork, PymongoCRUDService
 
 
 def pymongo_client_service():
