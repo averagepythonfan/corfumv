@@ -5,6 +5,7 @@ corfumv/entity/__pycache__
 corfumv/routers/__pycache__
 corfumv/schemas/__pycache__
 notebooks
+dist
 lab
 .ipynb_checkpoints
 .ruff_cache
