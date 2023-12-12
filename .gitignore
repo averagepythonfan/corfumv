@@ -1,0 +1,11 @@
+corfumv/__pycache__
+corfumv/core/__pycache__
+corfumv/mongo/__pycache__
+corfumv/entity/__pycache__
+corfumv/routers/__pycache__
+corfumv/schemas/__pycache__
+notebooks
+lab
+.ipynb_checkpoints
+.ruff_cache
+tests/__pycache__
