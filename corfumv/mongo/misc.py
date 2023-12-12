@@ -1,7 +1,7 @@
 import datetime
 from typing import Any, List, Union
 from pymongo.cursor import Cursor
-from CorfuMV.schemas import FindBy, UpdateExperiment, UpdateModel
+from corfumv.schemas import FindBy, UpdateExperiment, UpdateModel, UpdateModelBase
 
 
 def validate_cursor(cur: Cursor, is_list: bool = False) -> Union[list, str]:
@@ -30,7 +30,10 @@ def query(find_by: FindBy, value: Union[str, datetime.datetime, List[str]]):
         return {"date": {"$lt": datetime.datetime.fromisoformat(value)}}
 
 
-def update_query(update: Union[UpdateExperiment, UpdateModel], value: Any):
+def update_query(
+        update: Union[UpdateExperiment, UpdateModel, UpdateModelBase],
+        value: Any
+):
     if update is UpdateExperiment.rename:
         return {"$rename": {"name": value}}
     elif update is UpdateExperiment.add_tag:
@@ -42,25 +45,24 @@ def update_query(update: Union[UpdateExperiment, UpdateModel], value: Any):
     elif update is UpdateExperiment.remove_model:
         return {"$pull": {"models": {"$in": [value]}}}
 
-    elif update is UpdateModel.rename:
+    elif update is UpdateModelBase.rename:
         return {"$rename": {"name": value}}
-    elif update is UpdateModel.add_tag:
+    elif update is UpdateModelBase.add_tag:
         return {"$push": {"tags": value}}
-    elif update is UpdateModel.remove_tag:
+    elif update is UpdateModelBase.remove_tag:
         return {"$pull": {"tags": {"$in": [value]}}}
-    elif update is UpdateModel.add_params:
-        return {"$set": {"params": value}}
-    elif update is UpdateModel.remove_params:
-        return {"$unset": {"params": ""}}
-    elif update is UpdateModel.add_metric:
-        return {"$set": {"metrics": value}}
-    elif update is UpdateModel.remove_metric:
-        return {"$unset": {"metrics": ""}}
-    elif update is UpdateModel.set_description:
+    elif update is UpdateModelBase.set_description:
         return {"$set": {"description": value}}
+
+    elif update is UpdateModel.add_params:
+        return {"$push": {"params": value}}
+    elif update is UpdateModel.remove_params:
+        return {"$pull": {"params": {"$in": [value]}}}
+    elif update is UpdateModel.add_metric:
+        return {"$push": {"metrics": value}}
+    elif update is UpdateModel.remove_metric:
+        return {"$pull": {"metrics": {"$in": [value]}}}
     elif update is UpdateModel.set_config:
         return {"$set": {"config": value}}
     elif update is UpdateModel.set_weights:
         return {"$set": {"weights": value}}
-    
-    

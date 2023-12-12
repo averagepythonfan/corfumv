@@ -1,8 +1,8 @@
 from typing import Annotated, Optional
 from fastapi import APIRouter, Depends
-from CorfuMV.schemas import Experiments, Instance, FindBy, UpdateExperiment
-from CorfuMV.core import SyncCRUDService
-from CorfuMV.mongo import get_service
+from corfumv.schemas import Experiments, Instance, FindBy, UpdateExperiment
+from corfumv.core import SyncCRUDService
+from corfumv.mongo import get_service
 
 
 experiment_instance = Instance.experiment

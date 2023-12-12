@@ -1,8 +1,9 @@
 from typing import Annotated, Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
-from CorfuMV.schemas import Instance, FindBy, Models, ModelMetrics, ModelParams, UpdateModel
-from CorfuMV.core import SyncCRUDService
-from CorfuMV.mongo import get_service
+from corfumv.schemas import (Instance, FindBy, Models,
+                             ModelMetrics, ModelParams, UpdateModel, UpdateModelBase)
+from corfumv.core import SyncCRUDService
+from corfumv.mongo import get_service
 
 
 model_instance = Instance.model
@@ -50,6 +51,21 @@ async def get_model_list(
         is_list=True
     )
     return resp[num*page:num*(page+1)]
+
+
+@router.patch("/set")
+async def set_model_metadata(
+    service: Annotated[SyncCRUDService, Depends(get_service)],
+    instance_id: str,
+    update: UpdateModelBase,
+    value: str
+):
+    return service.update(
+        instance=model_instance,
+        instance_id=instance_id,
+        update=update,
+        value=value
+    )
 
 
 @router.patch("/set/params")

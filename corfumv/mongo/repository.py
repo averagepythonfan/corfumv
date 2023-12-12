@@ -4,8 +4,8 @@ from pymongo.database import Database
 from pymongo.cursor import Cursor
 from pymongo.collection import Collection
 from pymongo.client_session import ClientSession
-from CorfuMV.core import SyncRepository
-from CorfuMV.schemas import MetaCollection, Experiments, Models
+from corfumv.core import SyncRepository
+from corfumv.schemas import MetaCollection, Experiments, Models
 
 
 class PymongoRepository(SyncRepository):

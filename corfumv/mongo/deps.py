@@ -1,4 +1,4 @@
-from CorfuMV.config import SYNC, MONGO
+from corfumv.config import SYNC, MONGO
 from pymongo import MongoClient
 from .unit_of_work import PymongoUnitOfWork
 from .service import PymongoCRUDService

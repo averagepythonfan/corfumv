@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from CorfuMV.routers import exp_router, md_router
+from corfumv.routers import exp_router, md_router
 
 
 app = FastAPI()
