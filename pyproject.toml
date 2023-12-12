@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "corfumv"
-version = "0.1.0"
+version = "0.1.2.dev1"
 description = "framework for model versioning"
 authors = ["averagepythonfan <djonvorobei@bk.ru>"]
 readme = "README.md"
@@ -23,6 +23,10 @@ pytest = "^7.4.3"
 pytest-asyncio = "^0.23.2"
 httpx = "^0.25.2"
 
+
+[tool.poetry.group.client.dependencies]
+aiohttp = "^3.9.1"
+jupyterlab = "^4.0.9"
 
 [tool.pytest.ini_options]
 addopts = "--ignore=pgdata -p no:warnings"

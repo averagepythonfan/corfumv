@@ -8,4 +8,6 @@ notebooks
 lab
 .ipynb_checkpoints
 .ruff_cache
+.pytest_cache
 tests/__pycache__
+dist
