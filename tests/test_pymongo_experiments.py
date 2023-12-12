@@ -9,12 +9,12 @@ item_1, item_2, item_3 = [ObjectId().binary.hex() for _ in range(3)]
 
 
 @pytest.mark.parametrize(
-        argnames="gen_id, name, tags",
-        argvalues=[
-            (item_1, "first_try", ["v0.1.1", "alpha"]),
-            (item_2, "sec_try", ["v0.2.3", "beta", "temporary"]),
-            (item_3, "last_try", ["v0.5.2", "rc"]),
-        ]
+    argnames="gen_id, name, tags",
+    argvalues=[
+        (item_1, "first_try", ["v0.1.1", "alpha"]),
+        (item_2, "sec_try", ["v0.2.3", "beta", "temporary"]),
+        (item_3, "last_try", ["v0.5.2", "rc"]),
+    ]
 )
 def test_create_experiment(gen_id, name, tags):
     response = client.post(
@@ -46,12 +46,12 @@ def test_experiment_list():
 
 
 @pytest.mark.parametrize(
-        argnames="find_by, value, is_list",
-        argvalues=[
-            ("name", "sec_try", "false"),
-            ("tags", "beta", "false"),
-            ("date", str(datetime.datetime.now()), "true"),
-        ]
+    argnames="find_by, value, is_list",
+    argvalues=[
+        ("name", "sec_try", "false"),
+        ("tags", "beta", "false"),
+        ("date", str(datetime.datetime.now()), "true"),
+    ]
 )
 def test_find_by(find_by, value, is_list):
     response = client.get(

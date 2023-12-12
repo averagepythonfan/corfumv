@@ -1,6 +1,4 @@
 import datetime
-# import numpy
-# from pydantic import BaseModel
 from dataclasses import dataclass
 from typing import Optional, List, Union
 from bson.objectid import ObjectId

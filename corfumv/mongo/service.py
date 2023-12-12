@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import List, Optional, Union
 from pymongo.results import UpdateResult, DeleteResult
 from fastapi import HTTPException
-from CorfuMV.core import SyncCRUDService
+from corfumv.core import SyncCRUDService
 from .unit_of_work import PymongoUnitOfWork
-from CorfuMV.schemas import (Experiments,
+from corfumv.schemas import (Experiments,
                              Models,
                              CreationResponse,
                              UpdationResponse,

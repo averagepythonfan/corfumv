@@ -9,7 +9,6 @@ class MetaCollection(BaseModel):
         name = None
 
 
-# EXP
 class Experiments(MetaCollection):
 
     id: ObjectId = Field(default_factory=object_id_as_str, alias="_id")
@@ -22,9 +21,8 @@ class Experiments(MetaCollection):
         name = "experiment"
 
 
-# MODEL
 class ModelParams(BaseModel):
-    params: Optional[str] = None
+    parameter: Optional[str] = None
     value: Optional[Union[int, float, str]] = None
 
 class ModelMetrics(BaseModel):
@@ -39,8 +37,8 @@ JSONStructure = Union[JSONArray, JSONObject]
 class Models(MetaCollection):
 
     id: ObjectId = Field(default_factory=object_id_as_str, alias="_id")
-    params: Optional[List[ModelParams]] = None
     name: Optional[str] = None
+    params: Optional[List[ModelParams]] = None
     tags: Optional[List[str]] = None
     metrics: Optional[List[ModelMetrics]] = None
     description: Optional[str] = None

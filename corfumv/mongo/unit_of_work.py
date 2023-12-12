@@ -1,8 +1,7 @@
 from pymongo import MongoClient
-from CorfuMV.core import SyncUnitOfWork
+from corfumv.core import SyncUnitOfWork
 from .repository import SyncExperimentRepository, SyncModelRepository
 from pymongo.client_session import ClientSession
-# from .deps import client
 
 
 class PymongoUnitOfWork(SyncUnitOfWork):
