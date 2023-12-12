@@ -4,6 +4,8 @@ corfumv/mongo/__pycache__
 corfumv/entity/__pycache__
 corfumv/routers/__pycache__
 corfumv/schemas/__pycache__
+corfumv/client/__pycache__
+corfumv/utils/__pycache__
 notebooks
 lab
 .ipynb_checkpoints
