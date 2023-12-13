@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic
+from typing import Iterable, TypeVar, Generic
 from pydantic import BaseModel as PydanticBaseModel
 
 
@@ -20,7 +20,7 @@ class SyncRepository(Generic[PydanticModel, AnyClient], ABC):
     
 
     @abstractmethod
-    def get(self) -> PydanticModel:
+    def get(self) -> Iterable[PydanticModel]:
         raise NotImplementedError("`read` method not implemented")
     
 

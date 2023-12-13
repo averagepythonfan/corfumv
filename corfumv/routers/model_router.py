@@ -146,6 +146,34 @@ async def insert_weights(
     )
 
 
+@router.delete("/delete/params")
+async def set_model_params(
+    service: Annotated[SyncCRUDService, Depends(get_service)],
+    model_id: str,
+    param_name: str
+):
+    return service.update(
+        instance=model_instance,
+        instance_id=model_id,
+        update=UpdateModel.remove_params,
+        value=param_name
+    )
+
+
+@router.delete("/delete/metrics")
+async def set_model_params(
+    service: Annotated[SyncCRUDService, Depends(get_service)],
+    model_id: str,
+    metric_name: str
+):
+    return service.update(
+        instance=model_instance,
+        instance_id=model_id,
+        update=UpdateModel.remove_metric,
+        value=metric_name
+    )
+
+
 @router.delete("/delete")
 async def delete_model_by_id(
     service: Annotated[SyncCRUDService, Depends(get_service)],

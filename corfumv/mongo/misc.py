@@ -57,11 +57,11 @@ def update_query(
     elif update is UpdateModel.add_params:
         return {"$push": {"params": value}}
     elif update is UpdateModel.remove_params:
-        return {"$pull": {"params": {"$in": [value]}}}
+        return {"$pull": {"params": {"parameter": {"$in": [value]}}}}
     elif update is UpdateModel.add_metric:
         return {"$push": {"metrics": value}}
     elif update is UpdateModel.remove_metric:
-        return {"$pull": {"metrics": {"$in": [value]}}}
+        return {"$pull": {"metrics": {"metric": {"$in": [value]}}}}
     elif update is UpdateModel.set_config:
         return {"$set": {"config": value}}
     elif update is UpdateModel.set_weights:

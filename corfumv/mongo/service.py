@@ -141,6 +141,14 @@ class PymongoCRUDService(SyncCRUDService):
         """Update instance by its ID."""
 
         if instance is Instance.experiment:
+            if update is UpdateExperiment.add_model:
+                with self.uow:
+                    cur = self.uow.experiment.get({"_id": value})
+                    if len(list(cur)) == 0:
+                        raise HTTPException(
+                            status_code=435,
+                            detail="model not found"
+                        )
             q = update_query(update=update, value=value)
             with self.uow:
                 result: UpdateResult = self.uow.experiment.update(
