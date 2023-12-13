@@ -1,10 +1,15 @@
 from typing import Type, List
+from bson import ObjectId
 from requests import Session
 from corfumv.utils import get_corfumv_server_uri
-from corfumv.schemas import ExperimentsEntitry, ModelsEntity, Experiments
+from corfumv.schemas import (ExperimentsEntitry, ModelsEntity, Experiments,
+                             ModelParams, CreationResponse)
 
 
 class CorfuClient:
+    """Main CorfuMV client sync interface.
+    
+    Make request with `requests` lib."""
 
     session: Type[Session]
 
@@ -18,18 +23,75 @@ class CorfuClient:
     def uri(self):
         return self._uri
 
-    def create_experiment(self, name: str, tags: List[str]) -> Experiments:
+    def create_experiment(self,
+                          name: str,
+                          tags: List[str],
+                          object_id: ObjectId = ObjectId()) -> ExperimentsEntitry:
+        """Pass experiment name and tags.
+        
+        Create experiments with CorfuMV server."""
+
+        hex_id = object_id.binary.hex()
+
         url = self._uri + self._exp_endpoint + "/create"
         json_data = {
+            "_id": hex_id,
             'name': name,
             'tags': tags,
         }
         with self._session() as session:
+            session: Session
             resp = session.request("POST", url, json=json_data)
             if resp.status_code == 200:
-                return ExperimentsEntitry(name=name, tags=tags)
+                resp = CreationResponse(**resp.json())
+                assert resp.object_id == hex_id
+                return ExperimentsEntitry(
+                    _id=hex_id,
+                    name=name,
+                    tags=tags,
+                    uri=self._uri
+                )
             else:
-                raise TypeError(resp.text())
+                raise TypeError(resp.text)
+
+
+    def create_model(self,
+                     name: str,
+                     tags: List[str],
+                     params: List[ModelParams] = None,
+                     description: str = "",
+                     object_id: ObjectId = ObjectId()) -> ModelsEntity:
+        """Pass model name and tags.
+
+        Also you mau pass params options.
+        Create model with CorfuMV server."""
+
+        hex_id = object_id.binary.hex()
+
+        url = self._uri + self._model_endpoint + "/create"
+        json_data = {
+            "_id": hex_id,
+            "name": name,
+            "tags": tags,
+            "params": [el.model_dump() for el in params] if params else [],
+            "description": description
+        }
+        with self._session() as session:
+            session: Session
+            resp = session.request("POST", url, json=json_data)
+            if resp.status_code == 200:
+                resp = CreationResponse(**resp.json())
+                assert resp.object_id == hex_id
+                return ModelsEntity(
+                    _id=hex_id,
+                    name=name,
+                    tags=tags,
+                    params=params,
+                    description=description,
+                    uri=self._uri
+                )
+            else:
+                raise TypeError(resp.text)
 
 
     def list_of_experiments(self, page: int = 0, number_of: int = 10):
@@ -42,6 +104,8 @@ class CorfuClient:
             resp = session.request("GET", url, params=params)
             if resp.status_code == 200:
                 return [ExperimentsEntitry(**el) for el in resp.json()]
+            else:
+                return resp.json()
 
 
     def list_of_models(self, page: int = 0, number_of: int = 10):
@@ -54,6 +118,8 @@ class CorfuClient:
             resp = session.request("GET", url, params=params)
             if resp.status_code == 200:
                 return [ModelsEntity(**el) for el in resp.json()]
+            else:
+                return resp.json()
 
 
     def __enter__(self):
@@ -61,7 +127,7 @@ class CorfuClient:
         return self
 
     def __exit__(self, *args):
-        self.session.close()
+        self.close()
 
     def close(self):
         self._session.close()
