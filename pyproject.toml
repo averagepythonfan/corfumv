@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "corfumv"
-version = "0.1.2.dev1"
+version = "0.1.2.dev2"
 description = "framework for model versioning"
 authors = ["averagepythonfan <djonvorobei@bk.ru>"]
 readme = "README.md"

@@ -10,6 +10,15 @@ class MetaCollection(BaseModel):
 
 
 class Experiments(MetaCollection):
+    """Experiments base model.
+    
+    Uses as instance for any repository.
+    For example:
+    >>> class SyncExperimentRepository(PymongoRepository):
+    ...     model = Experiments
+    
+    Requires set `class Collcection` and property `name`.
+    Might be used in client section."""
 
     id: ObjectId = Field(default_factory=object_id_as_str, alias="_id")
     name: Optional[str] = None
@@ -35,6 +44,15 @@ JSONStructure = Union[JSONArray, JSONObject]
 
 
 class Models(MetaCollection):
+    """Models base model.
+    
+    Uses as instance for any repository.
+    For example:
+    >>> class SyncExperimentRepository(PymongoRepository):
+    ...     model = Models
+    
+    Requires set `class Collcection` and property `name`.
+    Might be used in client section."""
 
     id: ObjectId = Field(default_factory=object_id_as_str, alias="_id")
     name: Optional[str] = None

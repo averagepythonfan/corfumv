@@ -8,7 +8,6 @@ class Instance(Enum):
 
 
 class FindBy(Enum):
-    "Find instance by `name`, `date` or `tags`."
 
     name = "name"
     date = "date"

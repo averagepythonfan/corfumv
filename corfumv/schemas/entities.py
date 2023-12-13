@@ -7,6 +7,8 @@ from .enums import UpdateExperiment, UpdateModel
 
 
 class ModelsEntity(Models, Entity):
+    """Model entity for client section."""
+
     _prefix: str = "/models"
     _uri: str = get_corfumv_server_uri
 
