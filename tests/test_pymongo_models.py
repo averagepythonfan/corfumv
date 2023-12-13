@@ -94,6 +94,71 @@ def test_update_models(instance_id, update, value):
     assert response.status_code == 200
 
 
+@pytest.mark.parametrize(
+    argnames="model_id, parameter, value",
+    argvalues=[
+        (item_1, "regularization_l2", 0.001),
+        (item_2, "random_seed", 801),
+        (item_3, "kernel", "linear"),
+    ]
+)
+def test_set_params(model_id, parameter, value):
+    response = client.patch(
+        "/models/set/params",
+        params={"model_id": model_id},
+        json={"parameter": parameter, "value": value}
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    argnames="model_id, metric, value",
+    argvalues=[
+        (item_1, "f1-score", 0.80),
+        (item_2, "recall", 0.81),
+        (item_3, "precision", 0.70),
+    ]
+)
+def test_set_metrics(model_id, metric, value):
+    response = client.patch(
+        "/models/set/metrics",
+        params={"model_id": model_id},
+        json={"metric": metric, "value": value}
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    argnames="model_id, param_name",
+    argvalues=[
+        (item_1, "regularization_l2"),
+        (item_2, "random_seed"),
+        (item_3, "kernel"),
+    ]
+)
+def test_delete_params(model_id, param_name):
+    response = client.delete(
+        "/models/delete/params",
+        params={"model_id": model_id, "param_name": param_name},
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    argnames="model_id, metric_name",
+    argvalues=[
+        (item_1, "f1-score"),
+        (item_2, "recall"),
+        (item_3, "precision"),
+    ]
+)
+def test_delete_metrics(model_id, metric_name):
+    response = client.delete(
+        "/models/delete/metrics",
+        params={"model_id": model_id, "metric_name": metric_name}
+    )
+    assert response.status_code == 200
+
 
 @pytest.mark.parametrize(
         argnames="instance_id",

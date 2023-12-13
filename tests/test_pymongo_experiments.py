@@ -71,8 +71,6 @@ def test_find_by(find_by, value, is_list):
             (item_1, "rename", "renamed"),
             (item_1, "add_tag", "added_tag"),
             (item_1, "remove_tag", "added_tag"),
-            (item_2, "add_model", "28arg05gj00d2v9j]qj0w"),
-            (item_2, "remove_model", "28arg05gj00d2v9j]qj0w"),
         ]
 )
 def test_update(instance_id, update, value):
@@ -91,6 +89,18 @@ def test_update(instance_id, update, value):
         "update": update,
         "modefied_count": 1
     }
+
+
+def test_add_model():
+    response = client.patch(
+        "/experiments/set",
+        params={
+            'instance_id': item_2,
+            'update': "add_model",
+            'value': "23840hvf98hv9vqh98vr",
+        }
+    )
+    assert response.status_code == 435
 
 
 @pytest.mark.parametrize(
