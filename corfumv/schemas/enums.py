@@ -9,6 +9,7 @@ class Instance(Enum):
 
 class FindBy(Enum):
 
+    id = "id"
     name = "name"
     date = "date"
     tags = "tags"

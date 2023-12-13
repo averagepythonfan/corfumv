@@ -28,6 +28,8 @@ def query(find_by: FindBy, value: Union[str, datetime.datetime, List[str]]):
         return {"tags": {"$in": [value]}}
     elif find_by is FindBy.date:
         return {"date": {"$lt": datetime.datetime.fromisoformat(value)}}
+    elif find_by is FindBy.id:
+        return {"_id": value }
 
 
 def update_query(
@@ -35,7 +37,7 @@ def update_query(
         value: Any
 ):
     if update is UpdateExperiment.rename:
-        return {"$rename": {"name": value}}
+        return {"$set": {"name": value}}
     elif update is UpdateExperiment.add_tag:
         return {"$push": {"tags": value}}
     elif update is UpdateExperiment.remove_tag:
