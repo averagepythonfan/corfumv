@@ -22,4 +22,4 @@ test_mongo_up:
 rebuild:
 	rm -f dist/*
 	poetry build --format wheel
-	docker exec lab_corfumv bash -c 'pip install /app/dist/*'
+	docker exec lab_corfumv bash -c 'pip install --force-reinstall /app/dist/*'
