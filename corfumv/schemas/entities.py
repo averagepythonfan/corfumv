@@ -61,13 +61,13 @@ class ExperimentsEntitry(Experiments, Entity):
 
     def add_model(self, model: Union[Models, ModelsEntity]):
         return self._patch_request(
-            update=UpdateExperiment.add_tag.value,
+            update=UpdateExperiment.add_model.value,
             value=model.id
         )
 
 
     def remove_model(self, model: Union[Models, ModelsEntity]):
         return self._patch_request(
-            update=UpdateExperiment.remove_tag.value,
+            update=UpdateExperiment.remove_model.value,
             value=model.id
         )

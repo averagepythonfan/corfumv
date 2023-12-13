@@ -45,10 +45,10 @@ def update_query(
     elif update is UpdateExperiment.add_model:
         return {"$push": {"models": value}}
     elif update is UpdateExperiment.remove_model:
-        return {"$pull": {"models": {"$in": [value]}}}
+        return {"$pull": {"models": value}}
 
     elif update is UpdateModelBase.rename:
-        return {"$rename": {"name": value}}
+        return {"$set": {"name": value}}
     elif update is UpdateModelBase.add_tag:
         return {"$push": {"tags": value}}
     elif update is UpdateModelBase.remove_tag:

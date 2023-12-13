@@ -7,7 +7,8 @@ from corfumv.schemas import FindBy, DeletionResponse, UpdationResponse, UpdateEx
 class Entity(ABC):
     """Abstract entity class for experiments and models.
     
-    Require a `rename` realization method, and `_prefix` property"""
+    Require a `rename` realization method, and `_prefix` property.
+    Class implements `rename`, `add_tag`, `remove_tag` and `delete` method."""
 
     uri: str
     _prefix: str

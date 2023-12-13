@@ -143,7 +143,7 @@ class PymongoCRUDService(SyncCRUDService):
         if instance is Instance.experiment:
             if update is UpdateExperiment.add_model:
                 with self.uow:
-                    cur = self.uow.experiment.get({"_id": value})
+                    cur = self.uow.model.get(filter={"_id": value})
                     if len(list(cur)) == 0:
                         raise HTTPException(
                             status_code=435,
