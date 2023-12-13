@@ -55,23 +55,6 @@ class Entity(ABC):
 
     def remove_tag(self, tag: str) -> UpdationResponse:
         return self._patch_request(update="remove_tag", value=tag)
-    
-
-    def find_by(self,
-                find_by: Union[str, FindBy],
-                value: Any,
-                is_list: bool = False) -> List[dict]:
-        find = find_by if isinstance(find_by, FindBy) else FindBy(find_by)
-        options = {
-            "method": "GET",
-            "url": self.uri + self._prefix + self._set ,
-            "params": {
-                'find_by': find.value,
-                'value': value,
-                'is_list': is_list,
-            }
-        }
-        return self._make_request(**options)
 
 
     def delete(self) -> DeletionResponse:

@@ -1,9 +1,13 @@
-from typing import Type, List
+from typing import Any, Type, List, TypeVar, Union
 from bson import ObjectId
 from requests import Session
 from corfumv.utils import get_corfumv_server_uri
 from corfumv.schemas import (ExperimentsEntitry, ModelsEntity, Experiments,
-                             ModelParams, CreationResponse)
+                             ModelParams, CreationResponse, FindBy)
+
+
+T = TypeVar("T")
+FindByResponse = Union[T, List[T]]
 
 
 class CorfuClient:
@@ -94,7 +98,9 @@ class CorfuClient:
                 raise TypeError(resp.text)
 
 
-    def list_of_experiments(self, page: int = 0, number_of: int = 10):
+    def list_of_experiments(self,
+                            page: int = 0,
+                            number_of: int = 10) -> List[ExperimentsEntitry]:
         url = self._uri + self._exp_endpoint + "/list"
         params = {
             "num": number_of,
@@ -120,6 +126,62 @@ class CorfuClient:
                 return [ModelsEntity(**el) for el in resp.json()]
             else:
                 return resp.json()
+
+
+    def _find_by(self,
+                 endpoint: str,
+                 instance: Union[ExperimentsEntitry, ModelsEntity],
+                 find_by: Union[str, FindBy],
+                 value: Any,
+                 is_list: bool = False) -> List[T]:
+        """Private method to find instance BY."""
+
+        find = find_by if isinstance(find_by, FindBy) else FindBy(find_by)
+        options = {
+            "method": "GET",
+            "url": self.uri + endpoint + "/find_by" ,
+            "params": {
+                'find_by': find.value,
+                'value': value,
+                'is_list': is_list,
+            }
+        }
+        with self._session() as session:
+            session: Session
+            resp = session.request(**options)
+            if resp.status_code == 200:
+                if is_list is False:
+                    return instance(**resp.json()[0])
+                else:
+                    return [instance(**el) for el in resp.json()]
+            else:
+                raise ConnectionError(resp.text)
+
+
+    def find_experiment_by(self,
+                           find_by: Union[str, FindBy],
+                           value: Any,
+                           is_list: bool = False) -> FindByResponse[ExperimentsEntitry]:
+        return self._find_by(
+            endpoint=self._exp_endpoint,
+            instance=ExperimentsEntitry,
+            find_by=find_by,
+            value=value,
+            is_list=is_list
+        )
+
+
+    def find_model_by(self,
+                      find_by: Union[str, FindBy],
+                      value: Any,
+                      is_list: bool = False) -> FindByResponse[ModelsEntity]:
+        return self._find_by(
+            endpoint=self._model_endpoint,
+            instance=ModelsEntity,
+            find_by=find_by,
+            value=value,
+            is_list=is_list
+        )
 
 
     def __enter__(self):
