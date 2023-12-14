@@ -1,4 +1,5 @@
-from typing import List, Union
+from numpy import ndarray
+from typing import List, Union, TypeVar
 
 from pydantic import Field
 
@@ -6,6 +7,8 @@ from corfumv.core import Entity
 
 from .enums import UpdateExperiment, UpdateModelBase
 from .models import Experiments, ModelMetrics, ModelParams, Models
+
+TFModelMock = TypeVar("TFModelMock")
 
 
 class ModelsEntity(Models, Entity):
@@ -81,6 +84,8 @@ class ModelsEntity(Models, Entity):
 
 
     def set_config(self, config: dict) -> dict:
+        if self.config:
+            raise KeyError("Config is already initialized")
         options = {
             "method": "POST",
             "url": self.uri + self._prefix + self._set + "/config",
@@ -89,10 +94,14 @@ class ModelsEntity(Models, Entity):
                 "config": config
             }
         }
-        return self._make_request(**options)
+        if response := self._make_request(**options):
+            self.config = "Initialized"
+            return response
 
 
     def set_weights(self, weights: List[dict]) -> dict:
+        if self.weights:
+            raise KeyError("Weights are already initialized")
         options = {
             "method": "POST",
             "url": self.uri + self._prefix + self._set + "/weights",
@@ -101,7 +110,23 @@ class ModelsEntity(Models, Entity):
                 "weights": weights
             }
         }
-        return self._make_request(**options)
+        if response := self._make_request(**options):
+            self.weights = "Initialized"
+            return response
+
+
+    def _fetch_config(self) -> dict:
+        raise NotImplementedError()
+
+
+    def _fetch_weights(self) -> List[ndarray]:
+        raise NotImplementedError()
+
+
+    def fetch_model(self, sequential: TFModelMock) -> TFModelMock:
+        seq = sequential.from_config(config=self._fetch_config())
+        seq.set_weights(weights=self._fetch_weights())
+        return seq
 
 
 class ExperimentsEntitry(Experiments, Entity):

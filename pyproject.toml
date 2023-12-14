@@ -11,6 +11,8 @@ packages = [{include = "corfumv"}]
 python = "^3.10"
 requests = "^2.31.0"
 pydantic = "^2.5.2"
+bson = "^0.5.10"
+numpy = "^1.26.2"
 
 
 [tool.poetry.group.dev.dependencies]
