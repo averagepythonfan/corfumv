@@ -1,9 +1,13 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Any, AnyStr, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
 from .misc import ObjectId, object_id_as_str
+
+
+offset = timedelta(hours=3)
+tz = timezone(offset, name='MSC')
 
 
 class MetaCollection(BaseModel):
@@ -26,7 +30,7 @@ class Experiments(MetaCollection):
     id: ObjectId = Field(default_factory=object_id_as_str, alias="_id")
     name: Optional[str] = None
     tags: Optional[List[str]] = None
-    date: datetime = datetime.now()
+    date: datetime = datetime.now(tz=tz)
     models: Optional[List[ObjectId]] = []
 
     class Collection:
@@ -64,7 +68,7 @@ class Models(MetaCollection):
     tags: Optional[List[str]] = None
     metrics: Optional[List[ModelMetrics]] = None
     description: Optional[str] = None
-    date: datetime = datetime.now()
+    date: datetime = datetime.now(tz=tz)
     config: Optional[JSONStructure] = None
     weights: Optional[JSONStructure] = None
 

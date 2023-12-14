@@ -22,6 +22,7 @@ async def create_experiment(
 
 ):
     """Create an experiment by Experiments using CRUD service.
+
     Return a CreationResponse, or raise HTTP exception
     """
     return service.create(obj=exp)
@@ -80,5 +81,5 @@ async def delete_by_id(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     instance_id: str
 ):
-    """Delete experiment by its ID"""
+    """Delete experiment by its ID."""
     return service.delete(instance=experiment_instance, instance_id=instance_id)

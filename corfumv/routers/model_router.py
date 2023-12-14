@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated, Optional, List
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
@@ -12,6 +12,9 @@ from corfumv.schemas import (
     Models,
     UpdateModel,
     UpdateModelBase,
+    UpdationResponse,
+    CreationResponse,
+    DeletionResponse,
 )
 
 model_instance = Instance.model
@@ -27,8 +30,9 @@ router = APIRouter(
 async def create_model(
     md: Models,
     service: Annotated[SyncCRUDService, Depends(get_service)]
-):
+) -> CreationResponse:
     """Create model by Models shcema"""
+
     return service.create(obj=md)
 
 
@@ -38,7 +42,8 @@ async def find_model_by(
     find_by: FindBy,
     value: Optional[str] = None,
     is_list: bool = False
-):
+) -> List[Models]:
+
     return service.read(
         instance=model_instance,
         find_by=find_by,
@@ -52,7 +57,9 @@ async def get_model_list(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     num: int = 10,
     page: int = 0
-):
+) -> List[Models]:
+    """Return list of existing models."""
+
     resp = service.read(
         instance=model_instance,
         is_list=True
@@ -66,7 +73,8 @@ async def set_model_metadata(
     instance_id: str,
     update: UpdateModelBase,
     value: str
-):
+) -> UpdationResponse:
+
     return service.update(
         instance=model_instance,
         instance_id=instance_id,
@@ -80,7 +88,8 @@ async def set_model_params(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     model_id: str,
     params: ModelParams
-):
+) -> UpdationResponse:
+
     return service.update(
         instance=model_instance,
         instance_id=model_id,
@@ -94,7 +103,8 @@ async def set_model_metrics(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     model_id: str,
     metrics: ModelMetrics
-):
+) -> UpdationResponse:
+
     return service.update(
         instance=model_instance,
         instance_id=model_id,
@@ -107,7 +117,7 @@ async def set_model_metrics(
 async def insert_config(
     config: Request,
     service: Annotated[SyncCRUDService, Depends(get_service)]
-):
+)-> UpdationResponse:
 
     config = await config.json()
 
@@ -132,7 +142,7 @@ async def insert_config(
 async def insert_weights(
     weights: Request,
     service: Annotated[SyncCRUDService, Depends(get_service)]
-):
+) -> UpdationResponse:
 
     weights = await weights.json()
 
@@ -158,7 +168,8 @@ async def set_model_params(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     model_id: str,
     param_name: str
-):
+) -> UpdationResponse:
+
     return service.update(
         instance=model_instance,
         instance_id=model_id,
@@ -172,7 +183,8 @@ async def set_model_params(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     model_id: str,
     metric_name: str
-):
+) -> UpdationResponse:
+
     return service.update(
         instance=model_instance,
         instance_id=model_id,
@@ -185,6 +197,10 @@ async def set_model_params(
 async def delete_model_by_id(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     instance_id: str
-):
+) -> DeletionResponse:
     """Delete experiment by its ID"""
-    return service.delete(instance=model_instance, instance_id=instance_id)
+
+    return service.delete(
+        instance=model_instance,
+        instance_id=instance_id
+    )

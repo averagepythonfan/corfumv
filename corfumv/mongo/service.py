@@ -141,7 +141,8 @@ class PymongoCRUDService(SyncCRUDService):
                instance: Instance,
                instance_id: str,
                update: Union[UpdateExperiment, UpdateModel],
-               value: Union[str, ModelParams, ModelMetrics]) -> Optional[UpdationResponse]:
+               value: Union[str, ModelParams, ModelMetrics]
+               ) -> Optional[UpdationResponse]:
         """Update instance by its ID."""
         if instance is Instance.experiment:
             if update is UpdateExperiment.add_model:

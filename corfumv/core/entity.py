@@ -1,9 +1,7 @@
 from abc import ABC
-from typing import Type
+from typing import Optional, Type
 
 from requests import Session
-
-from corfumv.schemas import DeletionResponse, UpdateExperiment, UpdationResponse
 
 
 class Entity(ABC):
@@ -23,7 +21,8 @@ class Entity(ABC):
     _session: Type[Session] = Session
 
 
-    def _make_request(self, **options) -> dict | ConnectionError:
+    def _make_request(self, **options: dict) -> Optional[dict]:
+        """Private method to make requests with `Session` class."""
         with self._session() as session:
             resp = session.request(**options)
             if resp.status_code == 200:
@@ -33,6 +32,7 @@ class Entity(ABC):
 
 
     def _patch_request(self, update: str, value: str) -> dict:
+        """Private `PATCH` method to make request to CorfuMV server."""
         options = {
             "method": "PATCH",
             "url": self.uri + self._prefix + self._set ,
@@ -45,22 +45,26 @@ class Entity(ABC):
         return self._make_request(**options)
 
 
-    def rename(self, new_name: str) -> UpdationResponse:
+    def rename(self, new_name: str) -> dict:
+        """Rename any instance with private patch method."""
         return self._patch_request(
-            update=UpdateExperiment.rename.value,
+            update="rename",
             value=new_name
         )
 
 
-    def add_tag(self, tag: str) -> UpdationResponse:
+    def add_tag(self, tag: str) -> dict:
+        """Add tag to instance with private patch method."""
         return self._patch_request(update="add_tag", value=tag)
 
 
-    def remove_tag(self, tag: str) -> UpdationResponse:
+    def remove_tag(self, tag: str) -> dict:
+        """Remove tag from instance with private patch method."""
         return self._patch_request(update="remove_tag", value=tag)
 
 
-    def delete(self) -> DeletionResponse:
+    def delete(self) -> dict:
+        """Delete instance from db."""
         options = {
             "method": "DELETE",
             "url": self.uri + self._prefix + self._delete,

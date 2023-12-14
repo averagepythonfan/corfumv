@@ -1,10 +1,10 @@
-from typing import Union
+from typing import List, Union
 
 from pydantic import Field
 
 from corfumv.core import Entity
 
-from .enums import UpdateExperiment
+from .enums import UpdateExperiment, UpdateModelBase
 from .models import Experiments, ModelMetrics, ModelParams, Models
 
 
@@ -17,7 +17,7 @@ class ModelsEntity(Models, Entity):
 
     def add_param(self,
                    parameter: Union[str, ModelParams] = None,
-                   value: Union[str, int, float] = None):
+                   value: Union[str, float] = None):
         params = parameter.model_dump() if isinstance(parameter, ModelParams) else {
             "metric": parameter,
             "value": value
@@ -32,7 +32,7 @@ class ModelsEntity(Models, Entity):
 
     def add_metric(self,
                    metric: Union[str, ModelMetrics] = None,
-                   value: Union[str, int, float] = None):
+                   value: Union[str, float] = None):
         metrics = metric.model_dump() if isinstance(metric, ModelMetrics) else {
             "metric": metric,
             "value": value
@@ -45,12 +45,35 @@ class ModelsEntity(Models, Entity):
         return self._make_request(**options)
 
 
-    def set_config(self):
-        raise NotImplementedError
+    def set_description(self, description: str) -> dict:
+        return self._patch_request(
+            update=UpdateModelBase.set_description.value,
+            value=description
+        )
 
 
-    def set_weights(self):
-        raise NotImplementedError
+    def set_config(self, config: dict) -> dict:
+        options = {
+            "method": "POST",
+            "url": self.uri + self._prefix + "/set/config",
+            "json": {
+                "model_id": self.id,
+                "config": config
+            }
+        }
+        return self._make_request(**options)
+
+
+    def set_weights(self, weights: List[dict]) -> dict:
+        options = {
+            "method": "POST",
+            "url": self.uri + self._prefix + "/set/weights",
+            "json": {
+                "model_id": self.id,
+                "weights": weights
+            }
+        }
+        return self._make_request(**options)
 
 
 class ExperimentsEntitry(Experiments, Entity):

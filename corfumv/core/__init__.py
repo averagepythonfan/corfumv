@@ -1,3 +1,7 @@
+"""Core package.
+
+Provides `entity`, `repository`, `unit_of_work` and `service` classes.
+"""
 from .entity import Entity
 from .repository import AsyncRepository, SyncRepository
 from .service import SyncCRUDService

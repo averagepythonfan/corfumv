@@ -1,4 +1,4 @@
-from typing import Any, List, Type, TypeVar, Union
+from typing import List, Optional, Type, TypeVar, Union
 
 from bson import ObjectId
 from requests import Session
@@ -25,26 +25,35 @@ class CorfuClient:
     session: Type[Session]
 
     def __init__(self,
-                 uri: str = None,
+                 uri: Optional[str] = None,
                  session: Type[Session] = Session) -> None:
+        """Init `CorfuClient` instance.
+
+        You can pass `uri` (optional) and HTTP `session` (optional too).
+        If `uri` is missing, calls `get_corfumv_server_uri` function,
+        that return CorfuMV server uri.
+        If uri is not set in environment throws `ConnectionError`
+        """
         self._session: Session = session
         self._uri = uri if uri else get_corfumv_server_uri()
         self._exp_endpoint = "/experiments"
         self._model_endpoint = "/models"
 
+
     @property
-    def uri(self):
+    def uri(self) -> str:
+        """Return `uri` property."""
         return self._uri
+
 
     def create_experiment(self,
                           name: str,
-                          tags: List[str],
-                          object_id: ObjectId = ObjectId()) -> ExperimentsEntitry:
+                          tags: List[str]) -> ExperimentsEntitry:
         """Pass experiment name and tags.
 
         Create experiments with CorfuMV server.
         """
-        hex_id = object_id.binary.hex()
+        hex_id = ObjectId().binary.hex()
 
         url = self._uri + self._exp_endpoint + "/create"
         json_data = {
@@ -57,7 +66,6 @@ class CorfuClient:
             resp = session.request("POST", url, json=json_data)
             if resp.status_code == 200:
                 resp = CreationResponse(**resp.json())
-                assert resp.object_id == hex_id
                 return ExperimentsEntitry(
                     _id=hex_id,
                     name=name,
@@ -71,15 +79,14 @@ class CorfuClient:
     def create_model(self,
                      name: str,
                      tags: List[str],
-                     params: List[ModelParams] = None,
-                     description: str = "",
-                     object_id: ObjectId = ObjectId()) -> ModelsEntity:
+                     params: Optional[List[ModelParams]] = None,
+                     description: str = "") -> ModelsEntity:
         """Pass model name and tags.
 
         Also you mau pass params options.
         Create model with CorfuMV server.
         """
-        hex_id = object_id.binary.hex()
+        hex_id = ObjectId().binary.hex()
 
         url = self._uri + self._model_endpoint + "/create"
         json_data = {
@@ -94,7 +101,6 @@ class CorfuClient:
             resp = session.request("POST", url, json=json_data)
             if resp.status_code == 200:
                 resp = CreationResponse(**resp.json())
-                assert resp.object_id == hex_id
                 return ModelsEntity(
                     _id=hex_id,
                     name=name,
@@ -110,38 +116,48 @@ class CorfuClient:
     def list_of_experiments(self,
                             page: int = 0,
                             number_of: int = 10) -> List[ExperimentsEntitry]:
+        """Return all existing experiments."""
         url = self._uri + self._exp_endpoint + "/list"
         params = {
             "num": number_of,
             "page": page,
         }
         with self._session() as session:
+            session: Session
             resp = session.request("GET", url, params=params)
             if resp.status_code == 200:
-                return [ExperimentsEntitry(**el) for el in resp.json()]
+                return [
+                    ExperimentsEntitry(**el, uri=self._uri) for el in resp.json()
+                ]
             else:
                 return resp.json()
 
 
-    def list_of_models(self, page: int = 0, number_of: int = 10):
+    def list_of_models(self,
+                       page: int = 0,
+                       number_of: int = 10) -> List[ModelsEntity]:
+        """Return all existing models."""
         url = self._uri + self._model_endpoint + "/list"
         params = {
             "num": number_of,
             "page": page,
         }
         with self._session() as session:
+            session: Session
             resp = session.request("GET", url, params=params)
             if resp.status_code == 200:
-                return [ModelsEntity(**el) for el in resp.json()]
+                return [
+                    ModelsEntity(**el, uri=self._uri) for el in resp.json()
+                ]
             else:
                 return resp.json()
 
 
     def _find_by(self,
                  endpoint: str,
-                 instance: Union[ExperimentsEntitry, ModelsEntity],
+                 instance: T,
                  find_by: Union[str, FindBy],
-                 value: Any,
+                 value: Union[str, float],
                  is_list: bool = False) -> List[T]:
         """Private method to find instance BY."""
         find = find_by if isinstance(find_by, FindBy) else FindBy(find_by)
@@ -159,17 +175,22 @@ class CorfuClient:
             resp = session.request(**options)
             if resp.status_code == 200:
                 if is_list is False:
-                    return instance(**resp.json()[0])
+                    return instance(**resp.json()[0], uri=self._uri)
                 else:
-                    return [instance(**el) for el in resp.json()]
+                    insts = []
+                    for el in resp.json():
+                        el["uri"] = self._uri
+                        insts.append(instance.model_validate(el))
+                    return insts
             else:
                 raise ConnectionError(resp.text)
 
 
     def find_experiment_by(self,
                            find_by: Union[str, FindBy],
-                           value: Any,
+                           value: Union[str, float],
                            is_list: bool = False) -> FindByResponse[ExperimentsEntitry]:
+        """Find experimets by parameters."""
         return self._find_by(
             endpoint=self._exp_endpoint,
             instance=ExperimentsEntitry,
@@ -181,8 +202,9 @@ class CorfuClient:
 
     def find_model_by(self,
                       find_by: Union[str, FindBy],
-                      value: Any,
+                      value: Union[str, float],
                       is_list: bool = False) -> FindByResponse[ModelsEntity]:
+        """Find models by parameters."""
         return self._find_by(
             endpoint=self._model_endpoint,
             instance=ModelsEntity,
@@ -190,14 +212,3 @@ class CorfuClient:
             value=value,
             is_list=is_list
         )
-
-
-    def __enter__(self):
-        self.session = self._session()
-        return self
-
-    def __exit__(self, *args):
-        self.close()
-
-    def close(self):
-        self._session.close()

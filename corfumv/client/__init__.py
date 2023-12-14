@@ -1,4 +1,5 @@
 """Client module.
+
 It has only `CorfuClient` instance.
 """
 
