@@ -1,0 +1,24 @@
+version: "3.3"
+
+services:
+  mongodb_test:
+    image: mongo:latest
+    container_name: mongo_test
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: test
+    ports:
+      - "27017:27017"
+  corfumv_test:
+    build:
+      context: .
+      dockerfile: docker/corfumv.Dockerfile
+    container_name: corfumv_test
+    environment:
+      MONGO: mongodb://test:test@mongo_test:27017
+      SYNC: True
+    volumes:
+      - "./corfumv:/app/corfumv"
+    ports:
+      - "12000:12000"
+    entrypoint: uvicorn corfumv.server:app --host 0.0.0.0 --port 12000
