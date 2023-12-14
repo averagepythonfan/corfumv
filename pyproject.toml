@@ -44,7 +44,11 @@ indent-width = 4
 
 [tool.ruff.lint]
 # select = ["E4", "E7", "E9", "F"]
-ignore = ["F401", "FA100", "COM812"]
+ignore = [
+  "F401", "FA100", "COM812", "FA102",
+  "ANN101", "PLR", "D100", "A003",
+  "FBT001", "FBT002", "RET505"
+]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E401"]
