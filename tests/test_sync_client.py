@@ -1,99 +1,52 @@
 import pytest
-from corfumv.client import CorfuClient
-from corfumv.schemas import ExperimentsEntitry, ModelParams, ModelsEntity
-
-
-client: CorfuClient = CorfuClient(uri="http://localhost:11000")
-md: ExperimentsEntitry = client.create_model(
-            name="test_client",
-            tags=["test", "dev"],
-            params=[ModelParams(parameter="batch", value=120)],
-            description="test model"
-        )
-
-
-@pytest.fixture(scope="session")
-def init_exp():
-    exp: ExperimentsEntitry = client.create_experiment(
-            name="test_client",
-            tags=["test", "dev"]
-        )
-    yield exp
-    exp.delete()
+from conftest import client
+from corfumv.schemas import ModelsEntity, ModelParams, ExperimentsEntitry
 
 
 class TestClient:
 
-    def test_expinstance(self, init_exp):
-        assert isinstance(init_exp, ExperimentsEntitry)
+
+    def test_create_exp(self):
+        md: ModelsEntity = client.create_model(
+                name="test_clients_md",
+                tags=["test", "dev"],
+                params=[ModelParams(parameter="batch", value=120)],
+                description="test model"
+            )
+        assert isinstance(md, ModelsEntity)
+    
+
+    def test_create_experiment(self):
+        exp: ExperimentsEntitry = client.create_experiment(
+            name="test_clients_exp",
+            tags=["test", "dev"]
+        )
+        assert isinstance(exp, ExperimentsEntitry)
 
 
-    def test_rename_experiment(self, init_exp):
-        resp = init_exp.rename(new_name="renamed")
-        assert resp == {
-            "message": "experiment successfully updated",
-            "object_id": init_exp.id,
-            "update": "rename",
-            "modefied_count": 1
-        }
+    def test_list_of_experiment(self):
+        exp_list = client.list_of_experiments()
+        assert len(exp_list) == 1
+    
 
+    def test_list_of_models(self):
+        models_list = client.list_of_models()
+        assert len(models_list) == 1
+    
 
-    def test_rename_experiment_twice(self, init_exp: ExperimentsEntitry):
-        resp = init_exp.rename(new_name="renamed2")
-        assert resp == {
-            "message": "experiment successfully updated",
-            "object_id": init_exp.id,
-            "update": "rename",
-            "modefied_count": 1
-        }
+    def test_find_experiment(self):
+        exp = client.find_experiment_by(
+            find_by="name",
+            value="test_clients_exp"
+        )
+        assert isinstance(exp, ExperimentsEntitry)
+        assert exp.name == "test_clients_exp"
+    
 
-
-    def test_add_tag(self, init_exp: ExperimentsEntitry):
-        resp = init_exp.add_tag(tag="new_tag")
-        assert resp == {
-            "message": "experiment successfully updated",
-            "object_id": init_exp.id,
-            "update": "add_tag",
-            "modefied_count": 1
-        }
-
-
-    def test_remove_tag(self, init_exp: ExperimentsEntitry):
-        resp = init_exp.remove_tag(tag="test")
-        assert resp == {
-            "message": "experiment successfully updated",
-            "object_id": init_exp.id,
-            "update": "remove_tag",
-            "modefied_count": 1
-        }
-
-
-    def test_add_model(self,
-                       init_exp: ExperimentsEntitry):
-        resp = init_exp.add_model(model=md)
-        assert resp == {
-            "message": "experiment successfully updated",
-            "object_id": init_exp.id,
-            "update": "add_model",
-            "modefied_count": 1
-        }
-
-
-    def test_remove_model(self,
-                          init_exp: ExperimentsEntitry):
-        resp = init_exp.remove_model(model=md)
-        assert resp == {
-            "message": "experiment successfully updated",
-            "object_id": init_exp.id,
-            "update": "remove_model",
-            "modefied_count": 1
-        }
-
-
-    def test_delete_exp(self, init_exp: ExperimentsEntitry):
-        resp = init_exp.delete()
-        assert resp == {
-            "message": "experiment deleted",
-            "object_id": init_exp.id,
-            "deleted_count": 1
-        }
+    def test_find_model(self):
+        md = client.find_model_by(
+            find_by="name",
+            value="test_clients_md"
+        )
+        assert isinstance(md, ModelsEntity)
+        assert md.name == "test_clients_md"

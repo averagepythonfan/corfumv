@@ -1,10 +1,10 @@
 import datetime
 import pytest
 from bson import ObjectId
-from conftest import pymongo_client_service
+from conftest import test_client
 
 
-client = pymongo_client_service()
+client = test_client()
 item_1, item_2, item_3 = [ObjectId().binary.hex() for _ in range(3)]
 
 
