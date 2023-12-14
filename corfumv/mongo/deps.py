@@ -1,10 +1,11 @@
-from corfumv.config import SYNC, MONGO
 from pymongo import MongoClient
-from .unit_of_work import PymongoUnitOfWork
+
+from corfumv.config import MONGO, SYNC
+
 from .service import PymongoCRUDService
+from .unit_of_work import PymongoUnitOfWork
 
-
-client = MongoClient(MONGO, connect=False) 
+client = MongoClient(MONGO, connect=False)
 
 
 def get_uow():

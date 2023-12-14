@@ -4,6 +4,7 @@ version = "0.1.2.dev7"
 description = "framework for model versioning"
 authors = ["averagepythonfan <djonvorobei@bk.ru>"]
 readme = "README.md"
+packages = [{include = "corfumv"}]
 
 
 [tool.poetry.dependencies]
@@ -40,11 +41,10 @@ asyncio_mode="auto"
 select = ["ALL"]
 line-length = 88
 indent-width = 4
-ignore = ["FA100"]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F"]
-ignore = ["F401"]
+# select = ["E4", "E7", "E9", "F"]
+ignore = ["F401", "FA100", "COM812"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E401"]

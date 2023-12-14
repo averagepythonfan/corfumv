@@ -5,12 +5,12 @@ class SyncCRUDService(ABC):
 
     @abstractmethod
     def create(self, obj):
-        raise NotImplementedError()
-        
+        raise NotImplementedError
+
 
     @abstractmethod
     def read(self, instance, find_by, value, is_list: bool = False):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     @abstractmethod
@@ -19,9 +19,9 @@ class SyncCRUDService(ABC):
                instance_id,
                update,
                value):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     @abstractmethod
     def delete(self, instance, instance_id):
-        raise NotImplementedError()
+        raise NotImplementedError

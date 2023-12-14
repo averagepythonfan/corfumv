@@ -1,11 +1,12 @@
+from typing import Annotated
+
 from bson.objectid import ObjectId as _ObjectId
 from pydantic.functional_validators import AfterValidator
-from typing import Annotated
 
 
 def check_object_id(value: str) -> str:
     if not _ObjectId.is_valid(value):
-        raise ValueError('Invalid ObjectId')
+        raise ValueError("Invalid ObjectId")
     return value
 
 

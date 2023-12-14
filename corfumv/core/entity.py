@@ -1,14 +1,17 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from typing import Type
+
 from requests import Session
-from typing import Any, List, Type, Union
-from corfumv.schemas import FindBy, DeletionResponse, UpdationResponse, UpdateExperiment
+
+from corfumv.schemas import DeletionResponse, UpdateExperiment, UpdationResponse
 
 
 class Entity(ABC):
     """Abstract entity class for experiments and models.
-    
+
     Require a `rename` realization method, and `_prefix` property.
-    Class implements `rename`, `add_tag`, `remove_tag` and `delete` method."""
+    Class implements `rename`, `add_tag`, `remove_tag` and `delete` method.
+    """
 
     uri: str
     _prefix: str
@@ -34,9 +37,9 @@ class Entity(ABC):
             "method": "PATCH",
             "url": self.uri + self._prefix + self._set ,
             "params": {
-                'instance_id': self.id,
-                'update': update,
-                'value': value,
+                "instance_id": self.id,
+                "update": update,
+                "value": value,
             }
         }
         return self._make_request(**options)
@@ -51,7 +54,7 @@ class Entity(ABC):
 
     def add_tag(self, tag: str) -> UpdationResponse:
         return self._patch_request(update="add_tag", value=tag)
-    
+
 
     def remove_tag(self, tag: str) -> UpdationResponse:
         return self._patch_request(update="remove_tag", value=tag)
@@ -62,7 +65,7 @@ class Entity(ABC):
             "method": "DELETE",
             "url": self.uri + self._prefix + self._delete,
             "params": {
-                'instance_id': self.id,
+                "instance_id": self.id,
             }
         }
         return self._make_request(**options)

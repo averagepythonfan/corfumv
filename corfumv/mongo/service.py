@@ -1,23 +1,27 @@
 import logging
 from datetime import datetime
 from typing import List, Optional, Union
-from pymongo.results import UpdateResult, DeleteResult
-from fastapi import HTTPException
-from corfumv.core import SyncCRUDService
-from .unit_of_work import PymongoUnitOfWork
-from corfumv.schemas import (Experiments,
-                             Models,
-                             CreationResponse,
-                             UpdationResponse,
-                             DeletionResponse,
-                             Instance, 
-                             FindBy,
-                             UpdateExperiment,
-                             UpdateModel,
-                             ModelMetrics,
-                             ModelParams)
-from .misc import validate_cursor, query, update_query
 
+from fastapi import HTTPException
+from pymongo.results import DeleteResult, UpdateResult
+
+from corfumv.core import SyncCRUDService
+from corfumv.schemas import (
+    CreationResponse,
+    DeletionResponse,
+    Experiments,
+    FindBy,
+    Instance,
+    ModelMetrics,
+    ModelParams,
+    Models,
+    UpdateExperiment,
+    UpdateModel,
+    UpdationResponse,
+)
+
+from .misc import query, update_query, validate_cursor
+from .unit_of_work import PymongoUnitOfWork
 
 AnyObject = Union[Experiments, Models]
 
@@ -28,9 +32,10 @@ logger = logging.getLogger("pymongo.service.crud")
 
 class PymongoCRUDService(SyncCRUDService):
     """Pymongo CRUD service.
-    
+
     Require a UOW instance.
-    Uses only in endpoints, might raise HTTP exceptions."""
+    Uses only in endpoints, might raise HTTP exceptions.
+    """
 
     def __init__(self, uow: PymongoUnitOfWork) -> None:
         self.uow = uow
@@ -73,7 +78,7 @@ class PymongoCRUDService(SyncCRUDService):
                 status_code=434,
                 detail="unknown instance"
             )
-    
+
 
     def read(self,
              instance: Instance,
@@ -81,7 +86,6 @@ class PymongoCRUDService(SyncCRUDService):
              value: Union[str, datetime, List[str]] = None,
              is_list: bool = False) -> Optional[List[AnyObject]]:
         """Find object by params"""
-
         params = {
             "find_by": find_by,
             "value": value
@@ -96,14 +100,14 @@ class PymongoCRUDService(SyncCRUDService):
                 if isinstance(validated, list):
                     logger.info(f"read experiments, lenght: {len(validated)}")
                     return validated
-                
+
                 else:
                     logger.warning("read experiments are not validated")
                     raise HTTPException(
                         status_code=435,
                         detail={
                             "message": "read failed",
-                            "detail": validated 
+                            "detail": validated
                         }
                     )
 
@@ -121,7 +125,7 @@ class PymongoCRUDService(SyncCRUDService):
                         status_code=435,
                         detail={
                             "message": "read failed",
-                            "detail": validated 
+                            "detail": validated
                         }
                     )
 
@@ -139,7 +143,6 @@ class PymongoCRUDService(SyncCRUDService):
                update: Union[UpdateExperiment, UpdateModel],
                value: Union[str, ModelParams, ModelMetrics]) -> Optional[UpdationResponse]:
         """Update instance by its ID."""
-
         if instance is Instance.experiment:
             if update is UpdateExperiment.add_model:
                 with self.uow:

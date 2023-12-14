@@ -1,9 +1,10 @@
 from typing import Annotated, Optional
+
 from fastapi import APIRouter, Depends
-from corfumv.schemas import Experiments, Instance, FindBy, UpdateExperiment
+
 from corfumv.core import SyncCRUDService
 from corfumv.mongo import get_service
-
+from corfumv.schemas import Experiments, FindBy, Instance, UpdateExperiment
 
 experiment_instance = Instance.experiment
 
@@ -18,11 +19,11 @@ router = APIRouter(
 async def create_experiment(
     exp: Experiments,
     service: Annotated[SyncCRUDService, Depends(get_service)]
-    
+
 ):
     """Create an experiment by Experiments using CRUD service.
-    Return a CreationResponse, or raise HTTP exception"""
-
+    Return a CreationResponse, or raise HTTP exception
+    """
     return service.create(obj=exp)
 
 
@@ -47,7 +48,6 @@ async def find_experiment_by(
     is_list: bool = False,
 ):
     """Find experiment by params."""
-
     return service.read(
         instance=experiment_instance,
         find_by=find_by,
@@ -64,8 +64,9 @@ async def set_params(
     value: str
 ):
     """Update properties for experiment instance.
-    
-    You might rename model, add and remove tags or models."""
+
+    You might rename model, add and remove tags or models.
+    """
     return service.update(
         instance=experiment_instance,
         instance_id=instance_id,

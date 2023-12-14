@@ -1,12 +1,13 @@
 import datetime
 from typing import Any, List, Union
+
 from pymongo.cursor import Cursor
+
 from corfumv.schemas import FindBy, UpdateExperiment, UpdateModel, UpdateModelBase
 
 
 def validate_cursor(cur: Cursor, is_list: bool = False) -> Union[list, str]:
     """Validation function for `read` pymongo crud service method"""
-
     listed = list(cur)
 
     if len(listed) == 0:

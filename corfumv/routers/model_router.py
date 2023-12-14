@@ -1,10 +1,18 @@
 from typing import Annotated, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Request
-from corfumv.schemas import (Instance, FindBy, Models,
-                             ModelMetrics, ModelParams, UpdateModel, UpdateModelBase)
+
 from corfumv.core import SyncCRUDService
 from corfumv.mongo import get_service
-
+from corfumv.schemas import (
+    FindBy,
+    Instance,
+    ModelMetrics,
+    ModelParams,
+    Models,
+    UpdateModel,
+    UpdateModelBase,
+)
 
 model_instance = Instance.model
 
@@ -21,9 +29,8 @@ async def create_model(
     service: Annotated[SyncCRUDService, Depends(get_service)]
 ):
     """Create model by Models shcema"""
-
     return service.create(obj=md)
-    
+
 
 @router.get("/find_by")
 async def find_model_by(

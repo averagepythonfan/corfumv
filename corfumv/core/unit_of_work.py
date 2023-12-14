@@ -1,17 +1,19 @@
-from typing import Type, Union, TypeVar, final
 from abc import ABC, abstractmethod
+from typing import Type, TypeVar, Union, final
+
 from .repository import SyncRepository
 
-
-ExperimentRepository = TypeVar('ExperimentRepository')
-ModelRepository = TypeVar('ModelRepository')
+ExperimentRepository = TypeVar("ExperimentRepository")
+ModelRepository = TypeVar("ModelRepository")
 AnyRepository = Union[ExperimentRepository, ModelRepository]
 
 
 class SyncUnitOfWork(ABC):
     """Synchronous unit of work interface.
     Uses as superclass for every sync interface.
-    Examples:
+
+    Examples
+    --------
         >>> class PymongoUnitOfWork(SyncUnitOfWork):
         >>> ...
 
@@ -21,7 +23,8 @@ class SyncUnitOfWork(ABC):
     It require a definition of several methods:
     - `__init__`
     - `__enter__` and `__exit___` for context manager
-    - `commit` and `rollback` for transactions"""
+    - `commit` and `rollback` for transactions
+    """
 
     experiment: Type[SyncRepository]
     model: Type[SyncRepository]
@@ -29,8 +32,8 @@ class SyncUnitOfWork(ABC):
     def __init__(self,
                  autocommit: bool = False) -> None:
         """Definitely requires a repository instance,
-        optional you may pass `autocommit` bool parameter."""
-
+        optional you may pass `autocommit` bool parameter.
+        """
         self.autocommit = autocommit
 
 
@@ -52,22 +55,22 @@ class SyncUnitOfWork(ABC):
 
     @abstractmethod
     def begin(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     @abstractmethod
     def commit(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     @abstractmethod
     def rollback(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     @abstractmethod
     def close(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 # ASYNC
@@ -78,17 +81,17 @@ class AsyncUnitOfWork(ABC):
                  repository: AnyRepository,
                  autocommit: bool = False) -> None:
         """Definitely requires a repository instance,
-        optional you may pass `autocommit` bool parameter."""
-
+        optional you may pass `autocommit` bool parameter.
+        """
         self.repository = repository
         self.autocommit = autocommit
-    
+
 
     @abstractmethod
     async def __aenter__(self):
         await self.begin()
         return self
-    
+
     @abstractmethod
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type is not None:
@@ -101,19 +104,19 @@ class AsyncUnitOfWork(ABC):
 
     @abstractmethod
     async def begin(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     @abstractmethod
     async def commit(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     @abstractmethod
     async def rollback(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     @abstractmethod
     async def close(self):
-        raise NotImplementedError()
+        raise NotImplementedError

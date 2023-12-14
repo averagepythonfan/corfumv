@@ -1,11 +1,13 @@
 from typing import Type
-from pymongo.results import DeleteResult, UpdateResult, InsertOneResult
-from pymongo.database import Database
-from pymongo.cursor import Cursor
-from pymongo.collection import Collection
+
 from pymongo.client_session import ClientSession
+from pymongo.collection import Collection
+from pymongo.cursor import Cursor
+from pymongo.database import Database
+from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
+
 from corfumv.core import SyncRepository
-from corfumv.schemas import MetaCollection, Experiments, Models
+from corfumv.schemas import Experiments, MetaCollection, Models
 
 
 class PymongoRepository(SyncRepository):
@@ -19,13 +21,13 @@ class PymongoRepository(SyncRepository):
         self.client = self.session.client
         self.database: Database  = self.client.get_database(database)
         self.__coll: Collection = self.database.get_collection(self.model.Collection.name)
-    
+
     def save(self,
              obj: Type[MetaCollection] = None,
              **obj_kwargs) -> bool:
 
         md: MetaCollection = obj if obj else self.model(**obj_kwargs)
-        
+
         resp: InsertOneResult = self.__coll.insert_one(
             document=md.model_dump(exclude_none=True, by_alias=True),
             session=self.session
@@ -37,7 +39,7 @@ class PymongoRepository(SyncRepository):
             projection: dict = dict()) -> Cursor[Type[MetaCollection]]:
         return self.__coll.find(filter=filter, projection=projection, session=self.session)
 
-  
+
     def update(self,
                filter: dict = dict(),
                update: dict = dict()) -> UpdateResult:

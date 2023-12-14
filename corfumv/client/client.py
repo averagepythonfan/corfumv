@@ -1,10 +1,16 @@
-from typing import Any, Type, List, TypeVar, Union
+from typing import Any, List, Type, TypeVar, Union
+
 from bson import ObjectId
 from requests import Session
-from corfumv.utils import get_corfumv_server_uri
-from corfumv.schemas import (ExperimentsEntitry, ModelsEntity, Experiments,
-                             ModelParams, CreationResponse, FindBy)
 
+from corfumv.schemas import (
+    CreationResponse,
+    ExperimentsEntitry,
+    FindBy,
+    ModelParams,
+    ModelsEntity,
+)
+from corfumv.utils import get_corfumv_server_uri
 
 T = TypeVar("T")
 FindByResponse = Union[T, List[T]]
@@ -12,12 +18,15 @@ FindByResponse = Union[T, List[T]]
 
 class CorfuClient:
     """Main CorfuMV client sync interface.
-    
-    Make request with `requests` lib."""
+
+    Make request with `requests` lib.
+    """
 
     session: Type[Session]
 
-    def __init__(self, uri: str = None, session: Type[Session] = Session):
+    def __init__(self,
+                 uri: str = None,
+                 session: Type[Session] = Session) -> None:
         self._session: Session = session
         self._uri = uri if uri else get_corfumv_server_uri()
         self._exp_endpoint = "/experiments"
@@ -32,16 +41,16 @@ class CorfuClient:
                           tags: List[str],
                           object_id: ObjectId = ObjectId()) -> ExperimentsEntitry:
         """Pass experiment name and tags.
-        
-        Create experiments with CorfuMV server."""
 
+        Create experiments with CorfuMV server.
+        """
         hex_id = object_id.binary.hex()
 
         url = self._uri + self._exp_endpoint + "/create"
         json_data = {
             "_id": hex_id,
-            'name': name,
-            'tags': tags,
+            "name": name,
+            "tags": tags,
         }
         with self._session() as session:
             session: Session
@@ -68,8 +77,8 @@ class CorfuClient:
         """Pass model name and tags.
 
         Also you mau pass params options.
-        Create model with CorfuMV server."""
-
+        Create model with CorfuMV server.
+        """
         hex_id = object_id.binary.hex()
 
         url = self._uri + self._model_endpoint + "/create"
@@ -135,15 +144,14 @@ class CorfuClient:
                  value: Any,
                  is_list: bool = False) -> List[T]:
         """Private method to find instance BY."""
-
         find = find_by if isinstance(find_by, FindBy) else FindBy(find_by)
         options = {
             "method": "GET",
             "url": self.uri + endpoint + "/find_by" ,
             "params": {
-                'find_by': find.value,
-                'value': value,
-                'is_list': is_list,
+                "find_by": find.value,
+                "value": value,
+                "is_list": is_list,
             }
         }
         with self._session() as session:

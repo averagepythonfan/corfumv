@@ -1,8 +1,11 @@
-from pydantic import Field
-from .models import Experiments, Models, ModelMetrics, ModelParams
 from typing import Union
+
+from pydantic import Field
+
 from corfumv.core import Entity
+
 from .enums import UpdateExperiment
+from .models import Experiments, ModelMetrics, ModelParams, Models
 
 
 class ModelsEntity(Models, Entity):
@@ -43,17 +46,18 @@ class ModelsEntity(Models, Entity):
 
 
     def set_config(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
     def set_weights(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 class ExperimentsEntitry(Experiments, Entity):
     """Class for client interaction.
-    
-    Initialize, customize and dump models to CorfuMV server."""
+
+    Initialize, customize and dump models to CorfuMV server.
+    """
 
     uri: str = Field(exclude=True)
     _prefix: str = "/experiments"

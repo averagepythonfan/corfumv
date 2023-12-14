@@ -1,4 +1,4 @@
-from typing import Optional, NamedTuple
+from typing import NamedTuple, Optional
 
 
 class URI(NamedTuple):
@@ -12,7 +12,7 @@ class URI(NamedTuple):
 
     @classmethod
     def create(cls,
-               drivername: Optional[str] = 'mongodb',
+               drivername: Optional[str] = "mongodb",
                username: Optional[str] = None,
                password: Optional[str] = None,
                host: Optional[str] = None,
@@ -30,14 +30,14 @@ class URI(NamedTuple):
 
 
     def _options_to_string(self):
-        options_string = ''
+        options_string = ""
         for el in self.options.items():
             options_string += f"&{el[0]}={el[1]}"
         return options_string[1:]
 
 
     def to_string(self):
-        uri_string = ''
+        uri_string = ""
         if self.drivername:
             uri_string += f"{self.drivername}://"
         if (self.username and self.password):
