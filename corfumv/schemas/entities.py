@@ -17,30 +17,58 @@ class ModelsEntity(Models, Entity):
 
     def add_param(self,
                    parameter: Union[str, ModelParams] = None,
-                   value: Union[str, float] = None):
+                   value: Union[str, float] = None) -> dict:
         params = parameter.model_dump() if isinstance(parameter, ModelParams) else {
-            "metric": parameter,
+            "parameter": parameter,
             "value": value
         }
         options = {
             "method": "PATCH",
+            "url": self.uri + self._prefix + self._set + "/params",
             "params": {"model_id": self.id},
             "json": params
         }
-        self._make_request(**options)
+        return self._make_request(**options)
+
+
+    def remove_params(self,
+                      param_name: str):
+        options = {
+            "method": "DELETE",
+            "url": self.uri + self._prefix + self._delete + "/params",
+            "params": {
+                "model_id": self.id,
+                "param_name": param_name
+            }
+        }
+        return self._make_request(**options)
 
 
     def add_metric(self,
                    metric: Union[str, ModelMetrics] = None,
-                   value: Union[str, float] = None):
+                   value: Union[str, float] = None) -> dict:
         metrics = metric.model_dump() if isinstance(metric, ModelMetrics) else {
             "metric": metric,
             "value": value
         }
         options = {
             "method": "PATCH",
+            "url": self.uri + self._prefix + self._set + "/metrics",
             "params": {"model_id": self.id},
             "json": metrics
+        }
+        return self._make_request(**options)
+
+
+    def remove_metric(self,
+                      metric_name: str) -> dict:
+        options = {
+            "method": "DELETE",
+            "url": self.uri + self._prefix + self._delete + "/metrics",
+            "params": {
+                "model_id": self.id,
+                "metric_name": metric_name
+            }
         }
         return self._make_request(**options)
 
@@ -55,7 +83,7 @@ class ModelsEntity(Models, Entity):
     def set_config(self, config: dict) -> dict:
         options = {
             "method": "POST",
-            "url": self.uri + self._prefix + "/set/config",
+            "url": self.uri + self._prefix + self._set + "/config",
             "json": {
                 "model_id": self.id,
                 "config": config
@@ -67,7 +95,7 @@ class ModelsEntity(Models, Entity):
     def set_weights(self, weights: List[dict]) -> dict:
         options = {
             "method": "POST",
-            "url": self.uri + self._prefix + "/set/weights",
+            "url": self.uri + self._prefix + self._set + "/weights",
             "json": {
                 "model_id": self.id,
                 "weights": weights

@@ -42,5 +42,3 @@ def init_exp():
         )
     yield exp
     exp.delete()
-
-

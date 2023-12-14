@@ -1,5 +1,5 @@
 import pytest
-from corfumv.schemas import ModelsEntity
+from corfumv.schemas import ModelsEntity, ModelParams, ModelMetrics
 
 
 @pytest.mark.usefixtures("init_model")
@@ -35,6 +35,54 @@ class TestClientsModel:
             "message": "model successfully updated",
             "object_id": init_model.id,
             "update": "add_tag",
+            "modefied_count": 1
+        }
+
+
+    def test_add_params_by_str(self, init_model: ModelsEntity):
+        resp = init_model.add_param(
+            parameter="batch_size",
+            value=120
+        )
+        assert resp == {
+            "message": "model successfully updated",
+            "object_id": init_model.id,
+            "update": "add_params",
+            "modefied_count": 1
+        }
+
+
+    def test_add_params_by_MP(self, init_model: ModelsEntity):
+        p = ModelParams(parameter="seed", value=801)
+        resp = init_model.add_param(parameter=p)
+        assert resp == {
+            "message": "model successfully updated",
+            "object_id": init_model.id,
+            "update": "add_params",
+            "modefied_count": 1
+        }
+
+
+    def test_add_metric_by_str(self, init_model: ModelsEntity):
+        resp = init_model.add_metric(
+            metric="accuracy",
+            value=0.80
+        )
+        assert resp == {
+            "message": "model successfully updated",
+            "object_id": init_model.id,
+            "update": "add_metric",
+            "modefied_count": 1
+        }
+
+
+    def test_add_metric_by_MM(self, init_model: ModelsEntity):
+        m = ModelMetrics(metric="f1-score", value=0.68)
+        resp = init_model.add_metric(metric=m)
+        assert resp == {
+            "message": "model successfully updated",
+            "object_id": init_model.id,
+            "update": "add_metric",
             "modefied_count": 1
         }
 
@@ -77,6 +125,26 @@ class TestClientsModel:
             "message": "model successfully updated",
             "object_id": init_model.id,
             "update": "set_weights",
+            "modefied_count": 1
+        }
+
+
+    def test_delete_params(self, init_model: ModelsEntity):
+        resp = init_model.remove_params(param_name="batch_size")
+        assert resp == {
+            "message": "model successfully updated",
+            "object_id": init_model.id,
+            "update": "remove_params",
+            "modefied_count": 1
+        }
+
+
+    def test_delete_metrics(self, init_model: ModelsEntity):
+        resp = init_model.remove_metric(metric_name="f1-score")
+        assert resp == {
+            "message": "model successfully updated",
+            "object_id": init_model.id,
+            "update": "remove_metric",
             "modefied_count": 1
         }
 
