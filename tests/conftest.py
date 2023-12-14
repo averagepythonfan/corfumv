@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from pymongo import MongoClient
-from corfumv import app
+from corfumv.server import app
 from corfumv.client import CorfuClient
 from corfumv.mongo import get_service, PymongoUnitOfWork, PymongoCRUDService
 from corfumv.schemas import ExperimentsEntitry, ModelParams, ModelsEntity
