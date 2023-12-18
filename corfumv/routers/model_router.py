@@ -31,7 +31,7 @@ async def create_model(
     md: Models,
     service: Annotated[SyncCRUDService, Depends(get_service)]
 ) -> CreationResponse:
-    """Create model by Models shcema"""
+    """Create model by Models shcema."""
 
     return service.create(obj=md)
 
@@ -43,7 +43,9 @@ async def find_model_by(
     value: Optional[str] = None,
     is_list: bool = False
 ) -> List[Models]:
-
+    """Find models by params. Might be a list of several models,
+    if `is_list` is `True`.
+    """
     return service.read(
         instance=model_instance,
         find_by=find_by,
@@ -74,6 +76,7 @@ async def set_model_metadata(
     update: UpdateModelBase,
     value: str
 ) -> UpdationResponse:
+    """Set `name`, `tags` and `description` of model."""
 
     return service.update(
         instance=model_instance,
@@ -89,6 +92,7 @@ async def set_model_params(
     model_id: str,
     params: ModelParams
 ) -> UpdationResponse:
+    """Set model's `params`."""
 
     return service.update(
         instance=model_instance,
@@ -104,6 +108,7 @@ async def set_model_metrics(
     model_id: str,
     metrics: ModelMetrics
 ) -> UpdationResponse:
+    """Set model's `metrics`."""
 
     return service.update(
         instance=model_instance,
@@ -118,6 +123,7 @@ async def insert_config(
     config: Request,
     service: Annotated[SyncCRUDService, Depends(get_service)]
 )-> UpdationResponse:
+    """Set model's `config`."""
 
     config = await config.json()
 
@@ -143,6 +149,7 @@ async def insert_weights(
     weights: Request,
     service: Annotated[SyncCRUDService, Depends(get_service)]
 ) -> UpdationResponse:
+    """Set model's `weights`."""
 
     weights = await weights.json()
 
@@ -167,7 +174,7 @@ async def insert_weights(
 async def get_model_config(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     model_id: str,
-):
+) -> dict:
     resp: List[Models] = service.read(
         instance=model_instance,
         find_by=FindBy.id,
@@ -181,7 +188,7 @@ async def get_model_config(
 async def get_model_weights(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     model_id: str,
-):
+) -> dict:
     resp: List[Models] = service.read(
         instance=model_instance,
         find_by=FindBy.id,
@@ -192,7 +199,7 @@ async def get_model_weights(
 
 
 @router.delete("/delete/params")
-async def set_model_params(
+async def delete_model_params(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     model_id: str,
     param_name: str
@@ -207,7 +214,7 @@ async def set_model_params(
 
 
 @router.delete("/delete/metrics")
-async def set_model_params(
+async def delete_model_metrics(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     model_id: str,
     metric_name: str

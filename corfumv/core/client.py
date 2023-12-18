@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Type, TypeVar
 
-
 SyncSession = TypeVar("SyncSession")
 AsyncSession = TypeVar("AsyncSession")
 
@@ -30,7 +29,7 @@ class SyncClient(ABC):
     @abstractmethod
     def create_experiment(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     def create_model(self):
         raise NotImplementedError()
@@ -38,15 +37,15 @@ class SyncClient(ABC):
     @abstractmethod
     def list_of_experiments(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     def list_of_models(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     def find_experiment_by(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     def find_model_by(self):
         raise NotImplementedError()
@@ -72,7 +71,7 @@ class AsyncClient(ABC):
     @abstractmethod
     async def create_experiment(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     async def create_model(self):
         raise NotImplementedError()
@@ -80,15 +79,15 @@ class AsyncClient(ABC):
     @abstractmethod
     async def list_of_experiments(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     async def list_of_models(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     async def find_experiment_by(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     async def find_model_by(self):
         raise NotImplementedError()

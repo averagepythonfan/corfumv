@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "corfumv"
-version = "0.1.3.rc1"
-description = "framework for model versioning"
+version = "0.2.0.rc0"
+description = "Fast framework for model versioning"
 authors = ["averagepythonfan <djonvorobei@bk.ru>"]
+license = "MIT"
 readme = "README.md"
 packages = [{include = "corfumv"}]
 

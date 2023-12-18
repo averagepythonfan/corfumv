@@ -1,9 +1,10 @@
+from typing import Any, Dict, List, Optional, Type, Union
+
 from bson import ObjectId
 from requests import Session
-from typing import Any, List, Optional, Type, Union, Dict
-from corfumv.schemas import ExperimentsEntitry, ModelsEntity, FindBy, ModelParams
-from corfumv.core import SyncClient
 
+from corfumv.core import SyncClient
+from corfumv.schemas import ExperimentsEntitry, FindBy, ModelParams, ModelsEntity
 
 __all__ = [
     "RequestsClient"
@@ -14,6 +15,7 @@ ResponseJSONed = Union[Dict[str, Any], ConnectionError]
 
 
 class BaseRequestsClient(SyncClient):
+    """Base synchromous class for requests."""
 
     session: Type[Session]
 
@@ -32,16 +34,22 @@ class BaseRequestsClient(SyncClient):
 
 
     def __make_request(self, options: dict) -> ResponseJSONed:
+        """Base private request method. Require a dict with
+        `method`, `url` and `params`/`json` data."""
+
         with self.session() as session:
             resp = session.request(**options)
             if resp.status_code == 200:
                 return resp.json()
             else:
                 raise ConnectionError(resp.text)
-        
+
 
     def create_experiment(self, name: str, tags: List[str]) -> ExperimentsEntitry:
+        """Create experiment and return its instance."""
+
         hex_id = ObjectId().binary.hex()
+
         options = {
             "method": "POST",
             "url": self._uri + self.experiment_entity.Collection.endpoint + self._create,
@@ -58,14 +66,17 @@ class BaseRequestsClient(SyncClient):
                     tags=tags,
                     uri=self._uri
                 )
-    
+
 
     def create_model(self,
                      name: str,
                      tags: List[str],
                      params: Optional[List[ModelParams]] = None,
                      description: str = "") -> ModelsEntity:
+        """Create model and return its instance."""
+
         hex_id = ObjectId().binary.hex()
+
         options = {
             "method": "POST",
             "url": self._uri + self.model_entity.Collection.endpoint + self._create,
@@ -88,6 +99,8 @@ class BaseRequestsClient(SyncClient):
 
 
     def _list_of(self, prefix: str, page: int = 0, number_of: int = 10) -> list:
+        """Private method that return list of set instances."""
+
         options = {
             "method": "GET",
             "url": self._uri + prefix + self._list,
@@ -102,6 +115,8 @@ class BaseRequestsClient(SyncClient):
     def list_of_experiments(self,
                             page: int = 0,
                             number_of: int = 10) -> List[ExperimentsEntitry]:
+        """Return a list of all existing experiments."""
+
         resp =  self._list_of(
             prefix=self.experiment_entity.Collection.endpoint,
             page=page,
@@ -113,6 +128,8 @@ class BaseRequestsClient(SyncClient):
     def list_of_models(self,
                        page: int = 0,
                        number_of: int = 10) -> List[ModelsEntity]:
+        """Return a list of all existing models."""
+
         resp = self._list_of(
             prefix=self.model_entity.Collection.endpoint,
             page=page,
@@ -127,7 +144,9 @@ class BaseRequestsClient(SyncClient):
                  value: Union[str, float],
                  is_list: bool = False) -> List[Union[ExperimentsEntitry, ModelsEntity]]:
         """Private method to find instance BY."""
+
         find = find_by if isinstance(find_by, FindBy) else FindBy(find_by)
+
         options = {
             "method": "GET",
             "url": self.uri + instance.Collection.endpoint + self._find,
@@ -150,7 +169,10 @@ class BaseRequestsClient(SyncClient):
                 ]
 
 
-    def find_experiment_by(self, find_by, value, is_list: bool = False) -> Union[ExperimentsEntitry, List[ExperimentsEntitry]]:
+    def find_experiment_by(self,
+                           find_by,
+                           value,
+                           is_list: bool = False) -> Union[ExperimentsEntitry, List[ExperimentsEntitry]]:
         return self._find_by(
             instance=self.experiment_entity,
             find_by=find_by,
@@ -172,5 +194,6 @@ class BaseRequestsClient(SyncClient):
 
 
 class RequestsClient(BaseRequestsClient):
+    """Final sync client class."""
 
     session = Session

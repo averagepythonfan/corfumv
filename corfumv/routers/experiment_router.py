@@ -1,10 +1,18 @@
-from typing import Annotated, Optional
+from typing import Annotated, List, Optional
 
 from fastapi import APIRouter, Depends
 
 from corfumv.core import SyncCRUDService
 from corfumv.mongo import get_service
-from corfumv.schemas import Experiments, FindBy, Instance, UpdateExperiment
+from corfumv.schemas import (
+    Experiments,
+    FindBy,
+    Instance,
+    UpdateExperiment,
+    CreationResponse,
+    UpdationResponse,
+    DeletionResponse
+)
 
 experiment_instance = Instance.experiment
 
@@ -20,10 +28,10 @@ async def create_experiment(
     exp: Experiments,
     service: Annotated[SyncCRUDService, Depends(get_service)]
 
-):
+) -> CreationResponse:
     """Create an experiment by Experiments using CRUD service.
 
-    Return a CreationResponse, or raise HTTP exception
+    Return a CreationResponse, or raise HTTP exception.
     """
     return service.create(obj=exp)
 
@@ -33,7 +41,9 @@ async def get_experiment_list(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     num: int = 10,
     page: int = 0
-):
+) -> List[Experiments]:
+    """Return a list of existing experiments."""
+
     resp = service.read(
         instance=experiment_instance,
         is_list=True
@@ -47,8 +57,9 @@ async def find_experiment_by(
     find_by: FindBy,
     value: Optional[str] = None,
     is_list: bool = False,
-):
+) -> List[Experiments]:
     """Find experiment by params."""
+
     return service.read(
         instance=experiment_instance,
         find_by=find_by,
@@ -63,7 +74,7 @@ async def set_params(
     instance_id: str,
     update: UpdateExperiment,
     value: str
-):
+) -> UpdationResponse:
     """Update properties for experiment instance.
 
     You might rename model, add and remove tags or models.
@@ -80,6 +91,7 @@ async def set_params(
 async def delete_by_id(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     instance_id: str
-):
+) -> DeletionResponse:
     """Delete experiment by its ID."""
+
     return service.delete(instance=experiment_instance, instance_id=instance_id)
