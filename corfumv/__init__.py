@@ -6,5 +6,4 @@ Version 0.1.1.post1 provides only Mongo interface (pymongo driver).
 """
 from corfumv.client import CorfuClient
 
-
 __version__ = "0.1.3.rc0"

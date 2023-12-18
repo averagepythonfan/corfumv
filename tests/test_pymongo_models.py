@@ -130,6 +130,80 @@ class TestModels:
 
 
     @pytest.mark.parametrize(
+            argnames="model_id, config",
+            argvalues=[
+                (item_1, {"model_type": "sequential", "layers": 10}),
+                (item_2, {"model_type": "sequential", "layers": 16}),
+                (item_3, {"model_type": "sequential", "layers": 20})
+            ]
+    )
+    def test_set_config(self, model_id, config):
+        resp = client.post(
+            "models/set/config",
+            json={
+                "model_id": model_id,
+                "config": config
+            }
+        )
+        assert resp.status_code == 200
+
+
+    @pytest.mark.parametrize(
+            argnames="model_id, weights",
+            argvalues=[
+                (item_1, [{"layer1": 0.73, "layer2": 1.10}]),
+                (item_2, [{"layer1": 0.78, "layer2": 1.50}]),
+                (item_3, [{"layer1": 0.53, "layer2": 1.18}])
+            ]
+    )
+    def test_set_weights(self, model_id, weights):
+        resp = client.post(
+            "models/set/weights",
+            json={
+                "model_id": model_id,
+                "weights": weights
+            }
+        )
+        assert resp.status_code == 200
+
+
+    @pytest.mark.parametrize(
+            argnames="model_id",
+            argvalues=[
+                (item_1),
+                (item_2),
+                (item_3),
+            ]
+    )
+    def test_get_config(self, model_id):
+        resp = client.get(
+            "/models/config",
+            params={
+                "model_id": model_id
+            }
+        )
+        assert resp.status_code == 200
+    
+
+    @pytest.mark.parametrize(
+            argnames="model_id",
+            argvalues=[
+                (item_1),
+                (item_2),
+                (item_3),
+            ]
+    )
+    def test_get_weights(self, model_id):
+        resp = client.get(
+            "/models/weights",
+            params={
+                "model_id": model_id
+            }
+        )
+        assert resp.status_code == 200
+
+
+    @pytest.mark.parametrize(
         argnames="model_id, param_name",
         argvalues=[
             (item_1, "regularization_l2"),

@@ -42,7 +42,7 @@ def update_query(
     elif update is UpdateExperiment.add_tag:
         return {"$push": {"tags": value}}
     elif update is UpdateExperiment.remove_tag:
-        return {"$pull": {"tags": {"$in": [value]}}}
+        return {"$pull": {"tags": value}}
     elif update is UpdateExperiment.add_model:
         return {"$push": {"models": value}}
     elif update is UpdateExperiment.remove_model:
@@ -53,7 +53,7 @@ def update_query(
     elif update is UpdateModelBase.add_tag:
         return {"$push": {"tags": value}}
     elif update is UpdateModelBase.remove_tag:
-        return {"$pull": {"tags": {"$in": [value]}}}
+        return {"$pull": {"tags": value}}
     elif update is UpdateModelBase.set_description:
         return {"$set": {"description": value}}
 

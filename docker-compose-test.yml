@@ -9,6 +9,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: test
     ports:
       - "27017:27017"
+    networks:
+      - backend_test
   corfumv_test:
     build:
       context: .
@@ -22,3 +24,8 @@ services:
     ports:
       - "12000:12000"
     entrypoint: uvicorn corfumv.server:app --host 0.0.0.0 --port 12000
+    networks:
+      - backend_test
+
+networks:
+  backend_test:

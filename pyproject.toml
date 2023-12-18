@@ -20,6 +20,7 @@ pydantic = "^2.5.2"
 pymongo = "^4.6.1"
 fastapi = "^0.104.1"
 uvicorn = "^0.24.0.post1"
+numpy = "^1.26.2"
 
 
 [tool.poetry.group.test.dependencies]
@@ -32,6 +33,9 @@ httpx = "^0.25.2"
 [tool.poetry.group.client.dependencies]
 aiohttp = "^3.9.1"
 jupyterlab = "^4.0.9"
+platformdirs = "<4.0.0"
+numpy = "^1.26.2"
+
 
 [tool.pytest.ini_options]
 addopts = "--ignore=pgdata -p no:warnings"
@@ -42,20 +46,28 @@ asyncio_mode="auto"
 
 
 [tool.ruff]
-select = ["ALL"]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP",  # pyupgrade
+]
 line-length = 88
 indent-width = 4
 
 [tool.ruff.lint]
 # select = ["E4", "E7", "E9", "F"]
-ignore = [
-  "F401", "FA100", "COM812", "FA102",
-  "ANN101", "PLR", "D100", "A003",
-  "FBT001", "FBT002", "RET505"
-]
+# ignore = [
+#   "F401", "FA100", "COM812", "FA102",
+#   "ANN101", "PLR", "D100", "A003",
+#   "FBT001", "FBT002", "RET505"
+# ]
 
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["E401"]
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
 
 
 [build-system]
