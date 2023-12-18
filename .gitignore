@@ -14,3 +14,7 @@ lab
 .pytest_cache
 tests/__pycache__
 dist
+inventory.ini
+ansible.cfg
+.vscode
+/playbooks

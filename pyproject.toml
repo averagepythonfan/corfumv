@@ -38,6 +38,10 @@ platformdirs = "<4.0.0"
 numpy = "^1.26.2"
 
 
+
+[tool.poetry.group.build.dependencies]
+ansible = "^9.1.0"
+
 [tool.pytest.ini_options]
 addopts = "--ignore=pgdata -p no:warnings"
 pythonpath = [
