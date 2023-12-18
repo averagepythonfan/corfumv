@@ -1,10 +1,12 @@
-from typing import Annotated, Optional, List
+from typing import Annotated, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from corfumv.core import SyncCRUDService
 from corfumv.mongo import get_service
 from corfumv.schemas import (
+    CreationResponse,
+    DeletionResponse,
     FindBy,
     Instance,
     ModelMetrics,
@@ -13,8 +15,6 @@ from corfumv.schemas import (
     UpdateModel,
     UpdateModelBase,
     UpdationResponse,
-    CreationResponse,
-    DeletionResponse,
 )
 
 model_instance = Instance.model
@@ -161,6 +161,34 @@ async def insert_weights(
         update=UpdateModel.set_weights,
         value=weights
     )
+
+
+@router.get("/config")
+async def get_model_config(
+    service: Annotated[SyncCRUDService, Depends(get_service)],
+    model_id: str,
+):
+    resp: List[Models] = service.read(
+        instance=model_instance,
+        find_by=FindBy.id,
+        value=model_id,
+    )
+    md = resp[0]
+    return {"config": md["config"]}
+
+
+@router.get("/weights")
+async def get_model_weights(
+    service: Annotated[SyncCRUDService, Depends(get_service)],
+    model_id: str,
+):
+    resp: List[Models] = service.read(
+        instance=model_instance,
+        find_by=FindBy.id,
+        value=model_id,
+    )
+    md = resp[0]
+    return {"weights": md["weights"]}
 
 
 @router.delete("/delete/params")
