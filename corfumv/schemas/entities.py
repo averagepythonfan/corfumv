@@ -1,6 +1,6 @@
-from numpy import ndarray
-from typing import List, Union, TypeVar
+from typing import List, TypeVar, Union
 
+from numpy import ndarray, float32
 from pydantic import Field
 
 from corfumv.core import Entity
@@ -116,11 +116,27 @@ class ModelsEntity(Models, Entity):
 
 
     def _fetch_config(self) -> dict:
-        raise NotImplementedError()
+        options = {
+            "method": "GET",
+            "url": self.uri + self._prefix + "/config",
+            "params": {
+                "model_id": self.id
+            }
+        }
+        response = self._make_request(**options)
+        return response["config"]
 
 
     def _fetch_weights(self) -> List[ndarray]:
-        raise NotImplementedError()
+        options = {
+            "method": "GET",
+            "url": self.uri + self._prefix + "/weights",
+            "params": {
+                "model_id": self.id
+            }
+        }
+        response = self._make_request(**options)
+        return [ndarray(el, dtype=float32) for el in response["weights"]]
 
 
     def fetch_model(self, sequential: TFModelMock) -> TFModelMock:

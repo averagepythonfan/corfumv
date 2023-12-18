@@ -5,7 +5,6 @@ from pydantic import BaseModel, Field
 
 from .misc import ObjectId, object_id_as_str
 
-
 offset = timedelta(hours=3)
 tz = timezone(offset, name='MSC')
 
