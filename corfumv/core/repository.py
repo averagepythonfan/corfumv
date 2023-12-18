@@ -17,7 +17,7 @@ class SyncRepository(Generic[PydanticModel, AnyClient], ABC):
     @abstractmethod
     def save(self, obj: PydanticModel = None, **obj_data: dict) -> dict:
         """Save object to database.
-        
+
         You may pass `pydantic` model or just object data."""
         raise NotImplementedError("`create` method not implemented")
 
@@ -25,7 +25,7 @@ class SyncRepository(Generic[PydanticModel, AnyClient], ABC):
     @abstractmethod
     def get(self, filter: dict, projection: dict) -> List[PydanticModel]:
         """Get instance by parameters.
-        
+
         Return a list with models."""
         raise NotImplementedError("`read` method not implemented")
 
