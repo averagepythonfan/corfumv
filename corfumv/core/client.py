@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Type, TypeVar
+from typing import Optional, Type, TypeVar
 
 
 SyncSession = TypeVar("SyncSession")
@@ -15,6 +15,16 @@ class SyncClient(ABC):
 
     experiment_entity: Type[ExpEntity]
     model_entity: Type[MdEntity]
+
+    def __init__(self,
+                 uri: Optional[str]) -> None:
+        self._uri = uri
+
+
+    @property
+    def uri(self) -> str:
+        """Return `uri` property."""
+        return self._uri
 
 
     @abstractmethod
@@ -44,11 +54,20 @@ class SyncClient(ABC):
 
 class AsyncClient(ABC):
 
-    session: Type[AsyncSession]
+    session: Type[SyncSession]
 
     experiment_entity: Type[ExpEntity]
     model_entity: Type[MdEntity]
 
+    def __init__(self,
+                 uri: Optional[str]) -> None:
+        self._uri = uri
+
+
+    @property
+    def uri(self) -> str:
+        """Return `uri` property."""
+        return self._uri
 
     @abstractmethod
     async def create_experiment(self):

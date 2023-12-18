@@ -30,9 +30,8 @@ class BaseRequestsClient(SyncClient):
     _delete: str = "/delete"
 
 
-    def __init__(self,
-                 uri: Optional[str]) -> None:
-        self._uri = uri
+    def __init__(self, uri: Optional[str]) -> None:
+        super(BaseRequestsClient, self).__init__(uri=uri)
 
 
     def __make_request(self, options: dict) -> ResponseJSONed:
@@ -42,12 +41,6 @@ class BaseRequestsClient(SyncClient):
                 return resp.json()
             else:
                 raise ConnectionError(resp.text)
-
-
-    @property
-    def uri(self) -> str:
-        """Return `uri` property."""
-        return self._uri
         
 
     def create_experiment(self, name: str, tags: List[str]) -> ExperimentsEntitry:
