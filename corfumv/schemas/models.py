@@ -33,7 +33,8 @@ class Experiments(MetaCollection):
     models: Optional[List[ObjectId]] = []
 
     class Collection:
-        name = "experiment"
+        name = "experiments"
+        endpoint = '/experiments'
 
 
 class ModelParams(BaseModel):
@@ -72,4 +73,5 @@ class Models(MetaCollection):
     weights: Optional[JSONStructure] = None
 
     class Collection:
-        name = "model"
+        name = "models"
+        endpoint = '/models'

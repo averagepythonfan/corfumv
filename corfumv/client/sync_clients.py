@@ -20,9 +20,6 @@ class BaseRequestsClient(SyncClient):
     experiment_entity: Type[ExperimentsEntitry] = ExperimentsEntitry
     model_entity: Type[ModelsEntity] = ModelsEntity
 
-    _exp_endpoint: str = "/experiments"
-    _model_endpoint: str = "/models"
-
     _create: str = "/create"
     _list: str = "/list"
     _find: str = "/find_by"
@@ -47,7 +44,7 @@ class BaseRequestsClient(SyncClient):
         hex_id = ObjectId().binary.hex()
         options = {
             "method": "POST",
-            "url": self._uri + self._exp_endpoint + self._create,
+            "url": self._uri + self.experiment_entity.Collection.endpoint + self._create,
             "json": {
                 "_id": hex_id,
                 "name": name,
@@ -71,7 +68,7 @@ class BaseRequestsClient(SyncClient):
         hex_id = ObjectId().binary.hex()
         options = {
             "method": "POST",
-            "url": self._uri + self._model_endpoint + self._create,
+            "url": self._uri + self.model_entity.Collection.endpoint + self._create,
             "json": {
                 "_id": hex_id,
                 "name": name,
@@ -106,7 +103,7 @@ class BaseRequestsClient(SyncClient):
                             page: int = 0,
                             number_of: int = 10) -> List[ExperimentsEntitry]:
         resp =  self._list_of(
-            prefix=self._exp_endpoint,
+            prefix=self.experiment_entity.Collection.endpoint,
             page=page,
             number_of=number_of
         )
@@ -117,7 +114,7 @@ class BaseRequestsClient(SyncClient):
                        page: int = 0,
                        number_of: int = 10) -> List[ModelsEntity]:
         resp = self._list_of(
-            prefix=self._model_endpoint,
+            prefix=self.model_entity.Collection.endpoint,
             page=page,
             number_of=number_of
         )
@@ -125,7 +122,6 @@ class BaseRequestsClient(SyncClient):
 
 
     def _find_by(self,
-                 endpoint: str,
                  instance: Union[ExperimentsEntitry, ModelsEntity],
                  find_by: Union[str, FindBy],
                  value: Union[str, float],
@@ -134,7 +130,7 @@ class BaseRequestsClient(SyncClient):
         find = find_by if isinstance(find_by, FindBy) else FindBy(find_by)
         options = {
             "method": "GET",
-            "url": self.uri + endpoint + self._find,
+            "url": self.uri + instance.Collection.endpoint + self._find,
             "params": {
                 "find_by": find.value,
                 "value": value,
@@ -156,7 +152,6 @@ class BaseRequestsClient(SyncClient):
 
     def find_experiment_by(self, find_by, value, is_list: bool = False) -> Union[ExperimentsEntitry, List[ExperimentsEntitry]]:
         return self._find_by(
-            endpoint=self._exp_endpoint,
             instance=self.experiment_entity,
             find_by=find_by,
             value=value,
@@ -169,7 +164,6 @@ class BaseRequestsClient(SyncClient):
                       value,
                       is_list: bool = False) -> Union[ModelsEntity, List[ModelsEntity]]:
         return self._find_by(
-            endpoint=self._model_endpoint,
             instance=self.model_entity,
             find_by=find_by,
             value=value,
