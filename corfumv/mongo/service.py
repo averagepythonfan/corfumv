@@ -217,7 +217,7 @@ class PymongoCRUDService(SyncCRUDService):
                 response: DeleteResult = self.uow.experiment.delete(
                     filter=f
                 )
-                if response.acknowledged:
+                if response.deleted_count == 1:
                     logger.info(f"experiment deleted, id: {instance_id}")
                     return DeletionResponse(
                         message="experiment deleted",
@@ -237,7 +237,7 @@ class PymongoCRUDService(SyncCRUDService):
                 response: DeleteResult = self.uow.model.delete(
                     filter=f
                 )
-                if response.acknowledged:
+                if response.deleted_count == 1:
                     logger.info(f"model deleted, id: {instance_id}")
                     return DeletionResponse(
                         message="model deleted",

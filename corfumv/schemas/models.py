@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import Any, AnyStr, Dict, List, Optional, Union
+from typing import Any, AnyStr, Dict, List, Optional, Tuple, Union
 
 from pydantic import BaseModel, Field
 
@@ -69,6 +69,7 @@ class Models(MetaCollection):
     metrics: Optional[List[ModelMetrics]] = None
     description: Optional[str] = None
     date: datetime = datetime.now(tz=tz)
+    input_shape: Optional[Tuple[Any, Any]] = None
     config: Optional[JSONStructure] = None
     weights: Optional[JSONStructure] = None
 

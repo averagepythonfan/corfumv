@@ -1,5 +1,5 @@
 from httpx import AsyncClient as HTTPXAsyncClient
-from corfumv.core import AsyncClient
+from corfumv.core import AsyncClient, SyncClient
 from bson import ObjectId
 from typing import Any, List, Optional, Union, Dict, Type
 from corfumv.schemas import ExperimentsEntitry, ModelsEntity, FindBy, ModelParams
@@ -21,9 +21,15 @@ class BaseHTTPXClient(AsyncClient):
     experiment_entity = ExperimentsEntitry
     model_entity = ModelsEntity
 
+    _create: str = "/create"
+    _list: str = "/list"
+    _find: str = "/find_by"
+    _set: str = "/set"
+    _delete: str = "/delete"
+
 
     def __init__(self, uri: Optional[str]) -> None:
-        super(__class__, self).__init__(uri)
+        super(__class__, self).__init__(uri=uri)
 
 
     async def __make_request(self, options: dict) -> ResponseJSONed:
@@ -145,7 +151,11 @@ class BaseHTTPXClient(AsyncClient):
                 ]
 
 
-    async def find_experiment_by(self, find_by, value, is_list: bool = False) -> Union[ExperimentsEntitry, List[ExperimentsEntitry]]:
+    async def find_experiment_by(self,
+                                 find_by,
+                                 value,
+                                 is_list: bool = False
+                                 ) -> Union[ExperimentsEntitry, List[ExperimentsEntitry]]:
         return await self._find_by(
             instance=self.experiment_entity,
             find_by=find_by,
@@ -155,9 +165,10 @@ class BaseHTTPXClient(AsyncClient):
 
 
     async def find_model_by(self,
-                      find_by,
-                      value,
-                      is_list: bool = False) -> Union[ModelsEntity, List[ModelsEntity]]:
+                            find_by,
+                            value,
+                            is_list: bool = False
+                            ) -> Union[ModelsEntity, List[ModelsEntity]]:
         return await self._find_by(
             instance=self.model_entity,
             find_by=find_by,
@@ -168,4 +179,4 @@ class BaseHTTPXClient(AsyncClient):
 
 class HTTPXClient(BaseHTTPXClient):
 
-    session = AsyncClient
+    session = HTTPXAsyncClient
