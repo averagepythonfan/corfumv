@@ -6,7 +6,7 @@ COPY poetry.lock .
 COPY pyproject.toml .
 
 RUN poetry config virtualenvs.create false && \
-    poetry install --no-root --only dev
+    poetry install --no-root --without test,client,build
 
 WORKDIR /app
 
