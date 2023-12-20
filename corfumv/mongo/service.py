@@ -99,7 +99,7 @@ class PymongoCRUDService(SyncCRUDService):
                 validated: list | str = validate_cursor(cur=cur, is_list=is_list)
                 if isinstance(validated, list):
                     logger.info(f"read experiments, lenght: {len(validated)}")
-                    return validated
+                    return [Experiments(**el) for el in validated]
 
                 else:
                     logger.warning("read experiments are not validated")
@@ -117,7 +117,7 @@ class PymongoCRUDService(SyncCRUDService):
                 validated: list | str = validate_cursor(cur=cur, is_list=is_list)
                 if isinstance(validated, list):
                     logger.info(f"read models, lenght: {len(validated)}")
-                    return validated
+                    return [Models(**el) for el in validated]
 
                 else:
                     logger.warning("read models are not validated")

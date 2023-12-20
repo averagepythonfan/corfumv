@@ -46,12 +46,14 @@ async def find_model_by(
     """Find models by params. Might be a list of several models,
     if `is_list` is `True`.
     """
-    return service.read(
+    resp: List[Models] = service.read(
         instance=model_instance,
         find_by=find_by,
         value=value,
         is_list=is_list
     )
+
+    return [el.model_dump(exclude=["config", "weights"]) for el in resp]
 
 
 @router.get("/list")
@@ -62,11 +64,11 @@ async def get_model_list(
 ) -> List[Models]:
     """Return list of existing models."""
 
-    resp = service.read(
+    resp: List[Models] = service.read(
         instance=model_instance,
         is_list=True
     )
-    return resp[num*page:num*(page+1)]
+    return [el.model_dump(exclude=["config", "weights"]) for el in resp[num*page:num*(page+1)]]
 
 
 @router.patch("/set")
@@ -181,7 +183,7 @@ async def get_model_config(
         value=model_id,
     )
     md = resp[0]
-    return {"config": md["config"]}
+    return {"config": md.config}
 
 
 @router.get("/weights")
@@ -195,7 +197,7 @@ async def get_model_weights(
         value=model_id,
     )
     md = resp[0]
-    return {"weights": md["weights"]}
+    return {"weights": md.weights}
 
 
 @router.delete("/delete/params")

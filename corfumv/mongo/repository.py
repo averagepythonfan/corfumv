@@ -39,8 +39,8 @@ class PymongoRepository(SyncRepository):
 
 
     def get(self,
-            filter: dict = dict(),
-            projection: dict = dict()) -> Cursor[Type[MetaCollection]]:
+            filter: dict = {},
+            projection: dict = {}) -> Cursor[Type[MetaCollection]]:
         return self.__coll.find(
             filter=filter,
             projection=projection,
@@ -49,8 +49,8 @@ class PymongoRepository(SyncRepository):
 
 
     def update(self,
-               filter: dict = dict(),
-               update: dict = dict()) -> UpdateResult:
+               filter: dict = {},
+               update: dict = {}) -> UpdateResult:
         return self.__coll.update_one(
             filter=filter,
             update=update,

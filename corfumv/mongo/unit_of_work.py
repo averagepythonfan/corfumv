@@ -11,7 +11,7 @@ class PymongoUnitOfWork(SyncUnitOfWork):
     def __init__(self,
                  client: MongoClient,
                  autocommit: bool = False) -> None:
-        super(PymongoUnitOfWork, self).__init__(
+        super(__class__, self).__init__(
             autocommit=autocommit
         )
         self.client = client

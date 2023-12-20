@@ -99,9 +99,13 @@ class ModelsEntity(Models, Entity):
             return response
 
 
-    def set_weights(self, weights: List[dict]) -> dict:
+    def set_weights(self, weights: List[np.array]) -> dict:
+        """Accept a list of numpy arrays.
+        Throw a `KeyError` if weights are already initialized."""
+
         if self.weights:
             raise KeyError("Weights are already initialized")
+        weights = [el.tolist() for el in weights]
         options = {
             "method": "POST",
             "url": self.uri + self._prefix + self._set + "/weights",
@@ -140,6 +144,9 @@ class ModelsEntity(Models, Entity):
 
 
     def fetch_model(self, sequential: TFModelMock) -> TFModelMock:
+        """Accept a Keras sequential model,
+        set config and weights,and return it."""
+
         seq = sequential.from_config(config=self._fetch_config())
         seq.set_weights(weights=self._fetch_weights())
         return seq
