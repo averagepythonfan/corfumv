@@ -16,7 +16,7 @@ lab_url:
 run_tests:
 	docker compose -f docker-compose-test.yml up -d
 	sleep 1
-	poetry run pytest -v
+	-poetry run pytest -v
 	docker compose -f docker-compose-test.yml down
 
 rebuild:

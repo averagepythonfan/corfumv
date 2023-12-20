@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from pymongo import MongoClient
 from corfumv.server import app
-from corfumv.client import CorfuClient
+from corfumv.client import CorfuClient, CorfuAsyncClient
 from corfumv.mongo import get_service, PymongoUnitOfWork, PymongoCRUDService
 from corfumv.schemas import ExperimentsEntitry, ModelParams, ModelsEntity
 
@@ -26,6 +26,12 @@ def test_client():
 def sync_client():
     sync_client: CorfuClient = CorfuClient(uri=TEST_CORFUMV_URI)
     yield sync_client
+
+
+# @pytest.fixture(scope="module")
+# def async_client():
+#     cl = CorfuAsyncClient(uri=TEST_CORFUMV_URI)
+#     yield cl
 
 
 @pytest.fixture(scope="module")
