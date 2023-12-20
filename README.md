@@ -10,6 +10,41 @@
 2. We need light and fast framework to versioning models
 3. We use CorfuMV
 
+
+## Firstly, we need to up our CorfuMV server and MongoDB
+```
+# docker-compose.yml
+version: "3.3"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+  corfumv:
+    image: zhenyaover9000/corfumv:0.2.0.rc0
+    container_name: corfumv
+    environment:
+      MONGO: mongodb://root:secret@mongodb:27017
+      SYNC: True
+    volumes:
+      - "./corfumv:/app/corfumv"
+    ports:
+      - "11000:11000"
+    entrypoint: uvicorn corfumv.server:app --host 0.0.0.0 --port 11000 --reload
+```
+
+and then up services:
+```
+~$: docker compose up -d
+```
+
 ## Code example:
 
-pass
+```Python
+from corfumv.client import CorfuClient
+
+
+```

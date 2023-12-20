@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "corfumv"
-version = "0.2.0.rc0"
+version = "0.2.1.post0"
 description = "Fast framework for model versioning"
 authors = ["averagepythonfan <djonvorobei@bk.ru>"]
 license = "MIT"
@@ -60,16 +60,13 @@ select = [
     "B",  # flake8-bugbear
     "UP",  # pyupgrade
 ]
-line-length = 88
+line-length = 100
 indent-width = 4
 
 [tool.ruff.lint]
-# select = ["E4", "E7", "E9", "F"]
-# ignore = [
-#   "F401", "FA100", "COM812", "FA102",
-#   "ANN101", "PLR", "D100", "A003",
-#   "FBT001", "FBT002", "RET505"
-# ]
+ignore = [
+  "C901", "B006", "B904"
+]
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["F401"]

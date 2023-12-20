@@ -1,3 +1,4 @@
+from numpy import array
 import pytest
 from corfumv.schemas import ModelsEntity, ModelParams, ModelMetrics
 
@@ -119,7 +120,10 @@ class TestClientsModel:
 
 
     def test_set_weight(self, init_model: ModelsEntity):
-        weights = [{"layer1": [2, 4, 23, 15, 1, 55, 2554, 2]}]
+        weights = [
+            array([2, 4, 23, 15, 1, 55, 2554, 2]),
+            array([6, 3, 3, 15, 12, 5, 4, 27]),
+        ]
         resp = init_model.set_weights(weights=weights)
         assert resp == {
             "message": "model successfully updated",

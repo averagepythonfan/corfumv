@@ -30,7 +30,7 @@ class BaseRequestsClient(SyncClient):
 
 
     def __init__(self, uri: Optional[str]) -> None:
-        super(BaseRequestsClient, self).__init__(uri=uri)
+        super(__class__, self).__init__(uri=uri)
 
 
     def __make_request(self, options: dict) -> ResponseJSONed:
@@ -172,7 +172,8 @@ class BaseRequestsClient(SyncClient):
     def find_experiment_by(self,
                            find_by,
                            value,
-                           is_list: bool = False) -> Union[ExperimentsEntitry, List[ExperimentsEntitry]]:
+                           is_list: bool = False
+                           ) -> Union[ExperimentsEntitry, List[ExperimentsEntitry]]:
         return self._find_by(
             instance=self.experiment_entity,
             find_by=find_by,
@@ -184,7 +185,8 @@ class BaseRequestsClient(SyncClient):
     def find_model_by(self,
                       find_by,
                       value,
-                      is_list: bool = False) -> Union[ModelsEntity, List[ModelsEntity]]:
+                      is_list: bool = False
+                      ) -> Union[ModelsEntity, List[ModelsEntity]]:
         return self._find_by(
             instance=self.model_entity,
             find_by=find_by,
