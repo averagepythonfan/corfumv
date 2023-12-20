@@ -7,6 +7,7 @@ from corfumv.mongo import get_service, PymongoUnitOfWork, PymongoCRUDService
 from corfumv.schemas import ExperimentsEntitry, ModelParams, ModelsEntity
 
 
+@pytest.fixture(scope="module")
 def test_client():
     TEST_MONGO_URI = "mongodb://test:test@localhost:27017"
     test_mongo = MongoClient(TEST_MONGO_URI)
@@ -15,14 +16,14 @@ def test_client():
         return PymongoCRUDService(uow=PymongoUnitOfWork(client=test_mongo))
 
     app.dependency_overrides[get_service] = override_get_service
-    return TestClient(app=app)
+    yield TestClient(app=app)
 
 
 TEST_CORFUMV_URI = "http://localhost:12000"
 client: CorfuClient = CorfuClient(uri=TEST_CORFUMV_URI)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def init_model():
     md: ModelsEntity = client.create_model(
                 name="test_model",
@@ -34,7 +35,7 @@ def init_model():
     md.delete()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def init_exp():
     exp: ExperimentsEntitry = client.create_experiment(
             name="test_exp",

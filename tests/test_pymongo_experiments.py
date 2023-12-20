@@ -1,13 +1,12 @@
 import datetime
 import pytest
 from bson import ObjectId
-from conftest import test_client
 
 
-client = test_client()
 item_1, item_2, item_3 = [ObjectId().binary.hex() for _ in range(3)]
 
 
+@pytest.mark.usefixtures("test_client")
 class TestExperiments:
 
     @pytest.mark.parametrize(
@@ -18,8 +17,8 @@ class TestExperiments:
             (item_3, "last_try", ["v0.5.2", "rc"]),
         ]
     )
-    def test_create_experiment(self, gen_id, name, tags):
-        response = client.post(
+    def test_create_experiment(self, gen_id, name, tags, test_client):
+        response = test_client.post(
             "/experiments/create",
             json={
                 "_id": gen_id,
@@ -35,8 +34,8 @@ class TestExperiments:
         }
 
 
-    def test_experiment_list(self):
-        response = client.get(
+    def test_experiment_list(self, test_client):
+        response = test_client.get(
             "/experiments/list",
             params={
                 'num': '10',
@@ -55,8 +54,8 @@ class TestExperiments:
             ("date", str(datetime.datetime.now()), "true"),
         ]
     )
-    def test_find_by(self, find_by, value, is_list):
-        response = client.get(
+    def test_find_by(self, find_by, value, is_list, test_client):
+        response = test_client.get(
             "/experiments/find_by",
             params={
                 "find_by": find_by,
@@ -75,8 +74,8 @@ class TestExperiments:
                 (item_1, "remove_tag", "added_tag"),
             ]
     )
-    def test_update(self, instance_id, update, value):
-        response = client.patch(
+    def test_update(self, instance_id, update, value, test_client):
+        response = test_client.patch(
             "/experiments/set",
             params={
                 'instance_id': instance_id,
@@ -93,8 +92,8 @@ class TestExperiments:
         }
 
 
-    def test_add_model(self):
-        response = client.patch(
+    def test_add_model(self, test_client):
+        response = test_client.patch(
             "/experiments/set",
             params={
                 'instance_id': item_2,
@@ -113,8 +112,8 @@ class TestExperiments:
                 (item_3),
             ]
     )
-    def test_delete_experiment(self, instance_id):
-        response = client.delete(
+    def test_delete_experiment(self, instance_id, test_client):
+        response = test_client.delete(
             "/experiments/delete",
             params={"instance_id": instance_id}
         )

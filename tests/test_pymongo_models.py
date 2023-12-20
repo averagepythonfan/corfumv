@@ -1,13 +1,12 @@
 import datetime
 import pytest
 from bson import ObjectId
-from conftest import test_client
 
 
-client = test_client()
 item_1, item_2, item_3 = [ObjectId().binary.hex() for _ in range(3)]
 
 
+@pytest.mark.usefixtures("test_client")
 class TestModels:
     @pytest.mark.parametrize(
         argnames="gen_id, name, params, tags, metrics, description",
@@ -38,8 +37,8 @@ class TestModels:
             ),
         ]
     )
-    def test_create_models(self, gen_id, name, params, tags, metrics, description):
-        response = client.post(
+    def test_create_models(self, gen_id, name, params, tags, metrics, description, test_client):
+        response = test_client.post(
             "/models/create",
             json={
                 "_id": gen_id,
@@ -61,8 +60,8 @@ class TestModels:
             ("date", str(datetime.datetime.now()), "true"),
         ]
     )
-    def test_find_models_by(self, find_by, value, is_list):
-        response = client.get(
+    def test_find_models_by(self, find_by, value, is_list, test_client):
+        response = test_client.get(
             "/models/find_by",
             params={
                 "find_by": find_by,
@@ -83,8 +82,8 @@ class TestModels:
                 (item_3, "set_description", "This is parametrize desc2"),
             ]
     )
-    def test_update_models(self, instance_id, update, value):
-        response = client.patch(
+    def test_update_models(self, instance_id, update, value, test_client):
+        response = test_client.patch(
             "/models/set",
             params={
                 'instance_id': instance_id,
@@ -103,8 +102,8 @@ class TestModels:
             (item_3, "kernel", "linear"),
         ]
     )
-    def test_set_params(self, model_id, parameter, value):
-        response = client.patch(
+    def test_set_params(self, model_id, parameter, value, test_client):
+        response = test_client.patch(
             "/models/set/params",
             params={"model_id": model_id},
             json={"parameter": parameter, "value": value}
@@ -120,8 +119,8 @@ class TestModels:
             (item_3, "precision", 0.70),
         ]
     )
-    def test_set_metrics(self, model_id, metric, value):
-        response = client.patch(
+    def test_set_metrics(self, model_id, metric, value, test_client):
+        response = test_client.patch(
             "/models/set/metrics",
             params={"model_id": model_id},
             json={"metric": metric, "value": value}
@@ -137,8 +136,8 @@ class TestModels:
                 (item_3, {"model_type": "sequential", "layers": 20})
             ]
     )
-    def test_set_config(self, model_id, config):
-        resp = client.post(
+    def test_set_config(self, model_id, config, test_client):
+        resp = test_client.post(
             "models/set/config",
             json={
                 "model_id": model_id,
@@ -156,8 +155,8 @@ class TestModels:
                 (item_3, [{"layer1": 0.53, "layer2": 1.18}])
             ]
     )
-    def test_set_weights(self, model_id, weights):
-        resp = client.post(
+    def test_set_weights(self, model_id, weights, test_client):
+        resp = test_client.post(
             "models/set/weights",
             json={
                 "model_id": model_id,
@@ -175,8 +174,8 @@ class TestModels:
                 (item_3),
             ]
     )
-    def test_get_config(self, model_id):
-        resp = client.get(
+    def test_get_config(self, model_id, test_client):
+        resp = test_client.get(
             "/models/config",
             params={
                 "model_id": model_id
@@ -193,8 +192,8 @@ class TestModels:
                 (item_3),
             ]
     )
-    def test_get_weights(self, model_id):
-        resp = client.get(
+    def test_get_weights(self, model_id, test_client):
+        resp = test_client.get(
             "/models/weights",
             params={
                 "model_id": model_id
@@ -211,8 +210,8 @@ class TestModels:
             (item_3, "kernel"),
         ]
     )
-    def test_delete_params(self, model_id, param_name):
-        response = client.delete(
+    def test_delete_params(self, model_id, param_name, test_client):
+        response = test_client.delete(
             "/models/delete/params",
             params={"model_id": model_id, "param_name": param_name},
         )
@@ -227,8 +226,8 @@ class TestModels:
             (item_3, "precision"),
         ]
     )
-    def test_delete_metrics(self, model_id, metric_name):
-        response = client.delete(
+    def test_delete_metrics(self, model_id, metric_name, test_client):
+        response = test_client.delete(
             "/models/delete/metrics",
             params={"model_id": model_id, "metric_name": metric_name}
         )
@@ -243,8 +242,8 @@ class TestModels:
                 (item_3),
             ]
     )
-    def test_delete_experiment(self, instance_id):
-        response = client.delete(
+    def test_delete_experiment(self, instance_id, test_client):
+        response = test_client.delete(
             "/models/delete",
             params={"instance_id": instance_id}
         )
