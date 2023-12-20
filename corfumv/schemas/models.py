@@ -39,11 +39,11 @@ class Experiments(MetaCollection):
 
 class ModelParams(BaseModel):
     parameter: Optional[str] = None
-    value: Optional[Union[int, float, str]] = None
+    value: Optional[Any] = None
 
 class ModelMetrics(BaseModel):
     metric: Optional[str] = None
-    value: Optional[Union[int, float]] = None
+    value: Optional[Union[int, float, str]] = None
 
 JSONObject = Dict[AnyStr, Any]
 JSONArray = List[Any]
