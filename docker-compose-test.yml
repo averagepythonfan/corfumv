@@ -23,7 +23,7 @@ services:
       - "./corfumv:/app/corfumv"
     ports:
       - "12000:12000"
-    entrypoint: uvicorn corfumv.server:app --host 0.0.0.0 --port 12000
+    entrypoint: uvicorn corfumv.server:app --host 0.0.0.0 --port 12000 --reload
     networks:
       - backend_test
 

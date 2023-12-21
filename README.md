@@ -2,7 +2,7 @@
 
 ## Install now
 
-* `pip install git+https://github.com/averagepythonfan/corfumv.git`
+* `pip install https://github.com/averagepythonfan/corfumv/archive/main.zip`
 
 ## What is that all about?
 
@@ -24,7 +24,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: secret
   corfumv:
-    image: zhenyaover9000/corfumv:0.2.0.rc0
+    image: zhenyaover9000/corfumv:0.2.2.post0
     container_name: corfumv
     environment:
       MONGO: mongodb://root:secret@mongodb:27017
@@ -44,7 +44,13 @@ and then up services:
 ## Code example:
 
 ```Python
-from corfumv.client import CorfuClient
-
+>>> from corfumv.client import CorfuClient
+>>> client = CorfuClient("http://localhost:11000")
+>>> exp = client.create_experiment(name="test_del", tags=["test", "delete"])
+>>> exp.id
+... '658432fe394f866bc0096605'
+>>> md = client.create_model(name="test_md", tags=["test", "model"])
+>>> md.id
+... '6584339e394f866bc0096607'
 
 ```
