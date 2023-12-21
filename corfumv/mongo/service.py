@@ -44,6 +44,15 @@ class PymongoCRUDService(SyncCRUDService):
     def create(self, obj: AnyObject) -> Optional[CreationResponse]:
         if isinstance(obj, Experiments):
             with self.uow:
+                exist = self.uow.experiment.get(
+                    filter={"name": obj.name},
+                    projection={"_id": 1}
+                )
+                if len(list(exist)) != 0:
+                    raise HTTPException(
+                        status_code=409,
+                        detail=f"Experiment with name: `{obj.name}` already exist"
+                    )
                 if self.uow.experiment.save(obj=obj):
                     logger.info(f"experiment created, id: {obj.id}")
                     return CreationResponse(
@@ -59,6 +68,15 @@ class PymongoCRUDService(SyncCRUDService):
                     )
         elif isinstance(obj, Models):
             with self.uow:
+                exist = self.uow.model.get(
+                    filter={"name": obj.name},
+                    projection={"_id": 1}
+                )
+                if len(list(exist)) != 0:
+                    raise HTTPException(
+                        status_code=409,
+                        detail=f"Model with name: `{obj.name}` already exist"
+                    )
                 if self.uow.model.save(obj=obj):
                     logger.info(f"model created, id: {obj.id}")
                     return CreationResponse(
