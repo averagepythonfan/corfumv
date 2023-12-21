@@ -16,6 +16,7 @@ T = TypeVar("T")
 FindByResponse = Union[T, List[T]]
 
 
+# DEPRICATED
 class CorfuClient:
     """Main CorfuMV client sync interface.
 

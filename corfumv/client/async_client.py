@@ -1,9 +1,10 @@
-from httpx import AsyncClient as HTTPXAsyncClient
-from corfumv.core import AsyncClient, SyncClient
-from bson import ObjectId
-from typing import Any, List, Optional, Union, Dict, Type
-from corfumv.schemas import ExperimentsEntitry, ModelsEntity, FindBy, ModelParams
+from typing import Any, Dict, List, Optional, Type, Union
 
+from bson import ObjectId
+from httpx import AsyncClient as HTTPXAsyncClient
+
+from corfumv.core import AsyncClient
+from corfumv.schemas import ExperimentsEntitry, FindBy, ModelParams, ModelsEntity
 
 __all__ = [
     "HTTPXClient",
@@ -13,13 +14,12 @@ __all__ = [
 ResponseJSONed = Union[Dict[str, Any], ConnectionError]
 
 
-# DEV STAGE
 class BaseHTTPXClient(AsyncClient):
 
     session: Type[HTTPXAsyncClient]
 
-    experiment_entity = ExperimentsEntitry
-    model_entity = ModelsEntity
+    experiment_entity: Type[ExperimentsEntitry] = ExperimentsEntitry
+    model_entity: Type[ModelsEntity] = ModelsEntity
 
     _create: str = "/create"
     _list: str = "/list"
@@ -66,7 +66,10 @@ class BaseHTTPXClient(AsyncClient):
                            tags: List[str],
                            params: Optional[List[ModelParams]] = None,
                            description: str = "") -> ModelsEntity:
+        """Create model and return its instance."""
+
         hex_id = ObjectId().binary.hex()
+
         options = {
             "method": "POST",
             "url": self._uri + self.model_entity.Collection.endpoint + self._create,
