@@ -1,4 +1,4 @@
-from typing import Annotated, List, Optional
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends
 
@@ -41,7 +41,7 @@ async def get_experiment_list(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     num: int = 10,
     page: int = 0
-) -> List[Experiments]:
+) -> list:
     """Return a list of existing experiments."""
 
     resp = service.read(
@@ -57,7 +57,7 @@ async def find_experiment_by(
     find_by: FindBy,
     value: Optional[str] = None,
     is_list: bool = False,
-) -> List[Experiments]:
+) -> list:
     """Find experiment by params."""
 
     return service.read(

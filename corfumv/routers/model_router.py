@@ -42,7 +42,7 @@ async def find_model_by(
     find_by: FindBy,
     value: Optional[str] = None,
     is_list: bool = False
-) -> List[Models]:
+) -> list:
     """Find models by params. Might be a list of several models,
     if `is_list` is `True`.
     """
@@ -52,8 +52,7 @@ async def find_model_by(
         value=value,
         is_list=is_list
     )
-
-    return [el.model_dump(exclude=["config", "weights"]) for el in resp]
+    return [el.model_dump(exclude=["config", "weights"], by_alias=True) for el in resp]
 
 
 @router.get("/list")
@@ -61,14 +60,19 @@ async def get_model_list(
     service: Annotated[SyncCRUDService, Depends(get_service)],
     num: int = 10,
     page: int = 0
-) -> List[Models]:
+) -> list:
     """Return list of existing models."""
 
     resp: List[Models] = service.read(
         instance=model_instance,
         is_list=True
     )
-    return [el.model_dump(exclude=["config", "weights"]) for el in resp[num*page:num*(page+1)]]
+    return [
+        el.model_dump(
+            exclude=["config", "weights"],
+            by_alias=True
+        ) for el in resp[num*page:num*(page+1)]
+    ]
 
 
 @router.patch("/set")
