@@ -9,4 +9,4 @@ COPY pyproject.toml .
 COPY dist/ dist/
 
 RUN poetry config virtualenvs.create false && \
-    poetry install --no-root
+    poetry install --no-root --without build,test,dev
