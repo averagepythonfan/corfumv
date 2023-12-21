@@ -1,6 +1,6 @@
 """Client module.
 
-It has only `CorfuClient` instance.
+It has `CorfuClient` and `CorfuAsyncClient` instances.
 """
 
 
