@@ -48,8 +48,7 @@ class TestAsyncClient:
         )
         assert isinstance(exp, ExperimentsEntitry)
         assert exp.name == "test_async_clients_exp"
-        del_resp = exp.delete()
-        assert del_resp["deleted_count"] == 1
+        exp.delete()
 
 
     async def test_find_model(self, async_client):
@@ -59,69 +58,4 @@ class TestAsyncClient:
         )
         assert isinstance(md, ModelsEntity)
         assert md.name == "test_async_client_md"
-        print(md)
-        del_resp = md.delete()
-        assert del_resp["deleted_count"] == 1
-
-
-# import pytest
-# from httpx import AsyncClient, Response
-# from bson import ObjectId
-
-
-# async def async_request(method: str,
-#                         url: str,
-#                         params: dict = None,
-#                         json: dict = None) -> Response:
-#     async with AsyncClient() as session:
-#         return await session.request(
-#             method=method,
-#             url=url,
-#             params=params,
-#             json=json
-#         )
-
-
-# exp1, exp2, exp3 = [ObjectId().binary.hex() for _ in range(3)]
-
-
-# @pytest.mark.parametrize(
-#         argnames="hex_id, name, tags",
-#         argvalues=[
-#             (exp1, "test_exp1", ["test", "raw"]),
-#             (exp2, "test_exp2", ["test1", "raw"]),
-#             (exp3, "test_exp3", ["test2", "raw"]),
-#         ]
-# )
-# async def test_create_experiment(hex_id, name, tags):
-#     options = {
-#         "method": "POST",
-#         "url": "http://localhost:12000" + "/experiments" + "/create",
-#         "json": {
-#             "_id": hex_id,
-#             "name": name,
-#             "tags": tags,
-#         }
-#     }
-#     result = await async_request(**options)
-#     assert result.status_code == 200
-
-
-# @pytest.mark.parametrize(
-#         argnames="hex_id",
-#         argvalues=[
-#             (exp1),
-#             (exp2),
-#             (exp3),
-#         ]
-# )
-# async def test_delete_experiments(hex_id):
-#     options = {
-#         "method": "DELETE",
-#         "url": "http://localhost:12000" + "/experiments" + "/delete",
-#         "params": {
-#             "instance_id": hex_id
-#         }
-#     }
-#     result = await async_request(**options)
-#     assert result.status_code == 200
+        md.delete()

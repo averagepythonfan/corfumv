@@ -1,5 +1,13 @@
 import pytest
+from tests.conftest import TEST_CORFUMV_URI
 from corfumv.schemas import ModelsEntity, ModelParams, ExperimentsEntitry
+from corfumv.client import CorfuClient
+
+
+@pytest.fixture(scope="module")
+def sync_client():
+    sync_client: CorfuClient = CorfuClient(uri=TEST_CORFUMV_URI)
+    yield sync_client
 
 
 @pytest.mark.usefixtures("sync_client")

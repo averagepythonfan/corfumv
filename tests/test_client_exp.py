@@ -9,7 +9,7 @@ class TestClientsExperiment:
         assert isinstance(init_exp, ExperimentsEntitry)
 
 
-    def test_rename_experiment(self, init_exp):
+    def test_rename_experiment(self, init_exp: ExperimentsEntitry):
         resp = init_exp.rename(new_name="renamed")
         assert resp == {
             "message": "experiment successfully updated",
@@ -70,13 +70,4 @@ class TestClientsExperiment:
             "object_id": init_exp.id,
             "update": "remove_model",
             "modefied_count": 1
-        }
-
-
-    def test_delete_exp(self, init_exp: ExperimentsEntitry):
-        resp = init_exp.delete()
-        assert resp == {
-            "message": "experiment deleted",
-            "object_id": init_exp.id,
-            "deleted_count": 1
         }

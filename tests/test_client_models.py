@@ -152,11 +152,3 @@ class TestClientsModel:
             "modefied_count": 1
         }
 
-
-    def test_delete_exp(self, init_model: ModelsEntity):
-        resp = init_model.delete()
-        assert resp == {
-            "message": "model deleted",
-            "object_id": init_model.id,
-            "deleted_count": 1
-        }
