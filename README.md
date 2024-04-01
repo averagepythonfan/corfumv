@@ -29,11 +29,9 @@ services:
     environment:
       MONGO: mongodb://root:secret@mongodb:27017
       SYNC: True
-    volumes:
-      - "./corfumv:/app/corfumv"
     ports:
       - "11000:11000"
-    entrypoint: uvicorn corfumv.server:app --host 0.0.0.0 --port 11000 --reload
+    entrypoint: uvicorn corfumv.server:app --host 0.0.0.0 --port 11000
 ```
 
 and then up services:
